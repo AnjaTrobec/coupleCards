@@ -220,7 +220,7 @@ elif st.session_state.page == "game":
                 toggle_fav(current_q)
                 st.rerun()
         with c3:
-            if st.button("NAPREJ"):
+            if st.button(">"):
                 st.session_state.index += 1
                 st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
