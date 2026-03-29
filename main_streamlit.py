@@ -12,7 +12,7 @@ CARD_COLOR = "#fff2f5"
 BTN_COLOR = "#f2bfc9"     
 TEXT_COLOR = "#993366"    
 
-# 3. CSS STIL - KONČNA VERZIJA S POPRAVKOM ZA VODORAVNE GUMBE
+# 3. CSS STIL - KONČNA VERZIJA ZA IPHONE VRSTICO
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
@@ -44,7 +44,7 @@ st.markdown(f"""
         text-align: center !important;
     }}
 
-    /* CENTRIRANJE NAVPIČNIH BLOKOV */
+    /* CENTRIRANJE */
     [data-testid="stVerticalBlock"] > div {{
         display: flex !important;
         flex-direction: column !important;
@@ -53,7 +53,7 @@ st.markdown(f"""
         width: 100% !important;
     }}
 
-    /* SPLOŠNI STIL ZA GUMBE */
+    /* GUMBI */
     div.stButton > button {{
         background-color: {BTN_COLOR} !important;
         color: {TEXT_COLOR} !important;
@@ -68,28 +68,30 @@ st.markdown(f"""
         font-family: 'Patrick Hand', cursive !important;
     }}
 
-    /* --- POPRAVEK ZA VODORAVNO VRSTO NA TELEFONU --- */
-    .game-mode [data-testid="stHorizontalBlock"] {{
+    /* --- IPHONE FIX: Prisilna vodoravna postavitev --- */
+    [data-testid="column"] {{
+        width: calc(33% - 10px) !important;
+        flex: 1 1 calc(33% - 10px) !important;
+        min-width: 80px !important; /* Dovolj majhno za iPhone */
+    }}
+
+    [data-testid="stHorizontalBlock"] {{
+        flex-direction: row !important;
         display: flex !important;
-        flex-direction: row !important; /* Prisilimo v vrstico */
-        flex-wrap: nowrap !important;   /* Prepovemo prelom v novo vrstico */
+        flex-wrap: nowrap !important;
         align-items: center !important;
         justify-content: center !important;
+        gap: 5px !important;
         width: 100% !important;
-        gap: 8px !important; /* Razmik med gumbi */
-        margin: 0 auto !important;
     }}
 
-    /* Prilagoditev gumbov znotraj igralne vrstice */
+    /* Pomanjšamo pisavo na gumbih v vrstici, da grejo skozi */
     .game-mode div.stButton > button {{
-        font-size: 18px !important; /* Malo manjša pisava, da gre vse v vrsto */
-        padding: 8px 5px !important;
-        min-width: 0 !important;    /* Odstranimo minimalno širino gumba */
-        max-width: none !important; /* Naj se prilagodijo stolpcu */
-        margin: 0 !important;
+        font-size: 16px !important;
+        padding: 8px 2px !important;
+        width: 100% !important;
     }}
 
-    /* ANIMACIJA LETEČIH SRČKOV */
     @keyframes hearts-fly {{
         0% {{ bottom: -50px; opacity: 1; }}
         100% {{ bottom: 110vh; opacity: 0; }}
@@ -218,9 +220,10 @@ elif st.session_state.page == "game":
         
         # VRSTA GUMBOV
         st.markdown('<div class="game-mode">', unsafe_allow_html=True)
-        c1, c2, c3 = st.columns([1, 0.8, 1.2])
+        # Uporabimo enaka razmerja, a CSS bo zdaj prisilil širino
+        c1, c2, c3 = st.columns([1, 1, 1]) 
         with c1:
-            if st.button("<"):
+            if st.button("< "):
                 if st.session_state.index > 0:
                     st.session_state.index -= 1
                     st.rerun()
@@ -231,7 +234,7 @@ elif st.session_state.page == "game":
                 toggle_fav(current_q)
                 st.rerun()
         with c3:
-            if st.button("NAPREJ"):
+            if st.button("Naprej"):
                 st.session_state.index += 1
                 st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
@@ -243,7 +246,7 @@ elif st.session_state.page == "game":
             
     else:
         trigger_custom_hearts()
-        st.markdown("<h2 style='margin-top: 30px;'>Prišla sta do konca! ❤️</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='margin-top: 30px;'>Konec! ❤️</h2>", unsafe_allow_html=True)
         if st.button("Domov"):
             st.session_state.page = "main"
             st.rerun()
