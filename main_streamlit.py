@@ -12,44 +12,28 @@ CARD_COLOR = "#fff2f5"
 BTN_COLOR = "#f2bfc9"     
 TEXT_COLOR = "#993366"    
 
-# 3. "DOKONČNI" CSS ZA IPHONE (Ubijemo vse Streamlit robove)
+# 3. STABILEN CSS (Brez uničevanja sistemskih odmikov)
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
 
-    /* 1. Odstranimo vse sistemske odmike Streamlita */
     .stApp {{ background-color: {BG_COLOR}; }}
     
-    [data-testid="stHeader"] {{ display: none; }} /* Skrijemo Streamlitov top bar */
-    
     .block-container {{
-        max-width: 100% !important;
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
+        max-width: 600px !important; /* Omejimo širino za telefon, da je vse na sredini */
+        padding-top: 2rem !important;
     }}
 
-    /* 2. HEADER - Prisilimo ga, da je čez cel zaslon brez lukenj */
+    /* HEADER - Bel pravokotnik, ki objame vse zgoraj */
     .header-section {{
         background-color: #ffffff !important;
-        padding: 40px 20px 30px 20px;
-        text-align: center;
-        width: 100vw !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
+        padding: 20px !important;
+        border-radius: 0 0 30px 30px; /* Zaobljeni spodnji robovi za lepši prehod */
         border-bottom: 3px solid {BTN_COLOR};
         margin-bottom: 30px;
-        box-sizing: border-box;
+        width: 100% !important;
     }}
 
-    /* 3. CENTRIRANJE VSEBINE POD HEADERJEM */
-    [data-testid="stVerticalBlock"] {{
-        padding-left: 15px !important;
-        padding-right: 15px !important;
-    }}
-
-    /* Ikona srčka */
     .top-icon-container img {{
         max-width: 50px !important;
         margin: 0 auto 10px auto !important;
@@ -62,6 +46,14 @@ st.markdown(f"""
         text-align: center !important;
     }}
 
+    /* CENTRIRANJE GUMBOV */
+    [data-testid="stVerticalBlock"] > div {{
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }}
+
     /* GUMBI */
     div.stButton > button {{
         background-color: {BTN_COLOR} !important;
@@ -70,18 +62,17 @@ st.markdown(f"""
         border: none !important;
         width: 100% !important;
         max-width: 280px !important; 
-        font-size: 22px !important;
+        font-size: 20px !important;
         padding: 10px !important;
         margin: 5px auto !important;
-        box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
     }}
 
-    /* GUMB MENI V HEADERJU */
-    .menu-btn-top div.stButton > button {{
+    /* MALI GUMB MENI */
+    .menu-btn-small div.stButton > button {{
         max-width: 100px !important;
-        font-size: 16px !important;
-        padding: 5px !important;
-        margin-bottom: 15px !important;
+        font-size: 15px !important;
+        padding: 4px !important;
+        margin-bottom: 10px !important;
     }}
 
     /* ANIMACIJA SRČKOV */
@@ -100,9 +91,9 @@ st.markdown(f"""
 
     .game-mode [data-testid="stHorizontalBlock"] {{
         flex-direction: row !important;
-        width: 100% !important;
-        max-width: 500px !important;
-        margin: 0 auto !important;
+        display: flex !important;
+        justify-content: center !important;
+        gap: 10px !important;
     }}
 
     .q-card {{
@@ -111,7 +102,7 @@ st.markdown(f"""
         border-radius: 30px;
         border: 2px solid {BTN_COLOR};
         min-height: 200px;
-        max-width: 500px;
+        width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -126,7 +117,7 @@ def trigger_custom_hearts():
     for i in range(25):
         left_pos = random.randint(5, 95)
         delay = random.uniform(0, 2)
-        heart_html += f'<div class="heart-particle" style="left: {{left_pos}}%; animation-delay: {{delay}}s;">❤️</div>'
+        heart_html += f'<div class="heart-particle" style="left: {left_pos}%; animation-delay: {delay}s;">❤️</div>'
     st.markdown(heart_html, unsafe_allow_html=True)
 
 # 4. LOGIKA PODATKOV
@@ -170,16 +161,12 @@ def toggle_fav(q):
 # --- STRANI ---
 
 if st.session_state.page == "main":
-    # HEADER SECTION
     st.markdown('<div class="header-section">', unsafe_allow_html=True)
     if os.path.exists("heart.png"):
-        st.markdown('<div class="top-icon-container">', unsafe_allow_html=True)
         st.image("heart.png", width=50)
-        st.markdown('</div>', unsafe_allow_html=True)
-    st.markdown(f'<h1 style="font-size: 42px; margin: 0;">ČAS ZA NAJU</h1><p style="font-size: 18px; margin-top: 5px; opacity: 0.8;">✨ Pogovor, ki povezuje ✨</p></div>', unsafe_allow_html=True)
+    st.markdown(f'<h1 style="font-size: 38px; margin: 0;">ČAS ZA NAJU</h1><p style="font-size: 16px; opacity: 0.8;">✨ Pogovor, ki povezuje ✨</p></div>', unsafe_allow_html=True)
     
-    # KREMNI DEL
-    st.markdown(f"<h2 style='font-size: 32px; margin-top: 20px;'>IZBERI KATEGORIJO:</h2>", unsafe_allow_html=True)
+    st.markdown(f"<h2 style='font-size: 28px; margin-bottom: 20px;'>IZBERI KATEGORIJO:</h2>", unsafe_allow_html=True)
     for cat in sorted(questions.keys()):
         if st.button(cat.upper()):
             st.session_state.category = cat
@@ -188,7 +175,7 @@ if st.session_state.page == "main":
             
     if st.session_state.favorites:
         st.write("---")
-        if st.button("⭐ PRILJUBLJENE"):
+        if st.button("❤️ PRILJUBLJENE"):
             st.session_state.category = "PRILJUBLJENE"
             st.session_state.deck = st.session_state.favorites.copy()
             random.shuffle(st.session_state.deck)
@@ -198,14 +185,14 @@ if st.session_state.page == "main":
 
 elif st.session_state.page == "count_selection":
     st.markdown('<div class="header-section">', unsafe_allow_html=True)
-    st.markdown('<div class="menu-btn-top">', unsafe_allow_html=True)
+    st.markdown('<div class="menu-btn-small">', unsafe_allow_html=True)
     if st.button("Meni"):
         st.session_state.page = "main"
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
-    st.markdown(f'<h1 style="font-size: 38px; margin: 0;">{st.session_state.category}</h1></div>', unsafe_allow_html=True)
+    st.markdown(f'<h1 style="font-size: 32px; margin: 0;">{st.session_state.category}</h1></div>', unsafe_allow_html=True)
     
-    st.markdown('<p style="font-size: 24px; margin-top: 30px;">Koliko kartic?</p>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size: 22px; margin-top: 20px;">Koliko kartic?</p>', unsafe_allow_html=True)
     for opt in [5, 10, "Vse"]:
         if st.button(f"Igraj {opt}"):
             q_list = questions[st.session_state.category]
@@ -217,20 +204,20 @@ elif st.session_state.page == "count_selection":
 
 elif st.session_state.page == "game":
     st.markdown('<div class="header-section">', unsafe_allow_html=True)
-    st.markdown('<div class="menu-btn-top">', unsafe_allow_html=True)
+    st.markdown('<div class="menu-btn-small">', unsafe_allow_html=True)
     if st.button("Meni"):
         st.session_state.page = "main"
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
-    st.markdown(f'<h1 style="font-size: 34px; margin: 0;">{st.session_state.category}</h1></div>', unsafe_allow_html=True)
+    st.markdown(f'<h1 style="font-size: 30px; margin: 0;">{st.session_state.category}</h1></div>', unsafe_allow_html=True)
 
     if st.session_state.index < len(st.session_state.deck):
         current_q = st.session_state.deck[st.session_state.index]
         st.write(f"Kartica {st.session_state.index + 1} od {len(st.session_state.deck)}")
-        st.markdown(f'<div class="q-card"><p style="font-size: 26px; font-weight: bold;">{current_q}</p></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="q-card"><p style="font-size: 24px; font-weight: bold;">{current_q}</p></div>', unsafe_allow_html=True)
         
         st.markdown('<div class="game-mode">', unsafe_allow_html=True)
-        c1, c2, c3 = st.columns([1, 0.8, 1.2])
+        c1, c2, c3 = st.columns([1, 1, 1])
         with c1:
             if st.button("<"):
                 if st.session_state.index > 0:
