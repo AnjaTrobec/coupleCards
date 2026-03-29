@@ -17,6 +17,16 @@ st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
 
+    /* 1. PRISILA GLAVNEGA KONTEJNERJA NA SREDINO */
+    [data-testid="stVerticalBlock"] > div {{
+        display: flex;
+        flex-direction: column;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100%;
+    }}
+
+    /* 2. PRILAGODITEV ŠIRINE VSEBINE */
     .block-container {{
         max-width: 100% !important;
         padding: 10px 15px !important;
@@ -26,69 +36,76 @@ st.markdown(f"""
         background-color: {BG_COLOR}; 
     }}
 
+    /* 3. PISAVA IN BARVE */
     html, body, [class*="css"], .stMarkdown, p, h1, h2, h3, button {{
         font-family: 'Patrick Hand', cursive !important;
         color: {TEXT_COLOR} !important;
-    }}
-
-    /* Sredinska poravnava vseh gumbov */
-    div.stButton {{
         text-align: center;
-        width: 100%;
     }}
 
-    /* Stil za glavne gumbe (Kategorije) */
+    /* 4. STIL ZA GUMBE (Kategorije) */
+    div.stButton {{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }}
+
     div.stButton > button {{
         background-color: {BTN_COLOR} !important;
         color: {TEXT_COLOR} !important;
         border-radius: 25px !important;
         border: 2px solid {BTN_COLOR} !important;
         
-        /* Centriranje */
-        margin-left: auto !important;
-        margin-right: auto !important;
-        
-        /* Širina: na telefonu 100%, na računalniku max 450px */
+        /* Centriranje in širina */
+        margin: 10px auto !important;
         width: 100% !important;
         max-width: 450px !important; 
         
         display: block !important;
-        font-size: 24px !important;
+        font-size: 26px !important;
         padding: 12px 20px !important;
-        margin-bottom: 12px !important;
-        box-shadow: 2px 4px 8px rgba(0,0,0,0.1) !important; /* Rahla senca za "klikljivost" */
+        box-shadow: 2px 4px 8px rgba(0,0,0,0.1) !important;
     }}
 
-    /* Stil za navigacijske gumbe v vrstici (Igra) */
+    /* 5. IZJEMA ZA NAVIGACIJO V IGRI (da gumbi ostanejo v vrsti) */
+    [data-testid="column"] [data-testid="stVerticalBlock"] > div {{
+        flex-direction: row !important;
+        align-items: stretch !important;
+        justify-content: space-between !important;
+    }}
+    
     [data-testid="column"] div.stButton > button {{
         max-width: 100% !important;
         font-size: 18px !important;
         padding: 10px 5px !important;
-        margin-bottom: 5px !important;
     }}
 
+    /* 6. KARTICA Z VPRAŠANJEM */
     .q-card {{
         background-color: {CARD_COLOR};
-        padding: 25px;
-        border-radius: 25px;
+        padding: 30px;
+        border-radius: 30px;
         border: 2px solid {BTN_COLOR};
         text-align: center;
-        margin: 15px auto;
-        min-height: 200px;
-        max-width: 500px; /* Da kartica na računalniku ni preširoka */
+        margin: 20px auto;
+        min-height: 250px;
+        max-width: 500px;
         display: flex;
         align-items: center;
         justify-content: center;
     }}
 
     .q-text {{ 
-        font-size: 28px !important; 
+        font-size: 32px !important; 
         font-weight: bold;
     }}
 
+    /* Skrijemo nepotrebne Streamlit elemente */
     #MainMenu, footer, header {{visibility: hidden;}}
     </style>
     """, unsafe_allow_html=True)
+
+
 FAVORITES_FILE = "favorites.txt"
 
 def load_data():
