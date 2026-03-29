@@ -12,7 +12,7 @@ CARD_COLOR = "#fff2f5"
 BTN_COLOR = "#f2bfc9"     
 TEXT_COLOR = "#993366"    
 
-# 3. CSS STIL (Poenostavljen, da ne kvari stolpcev)
+# 3. CSS STIL (Fokus na sredinsko poravnavo in manjše razmike)
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
@@ -23,10 +23,10 @@ st.markdown(f"""
     /* HEADER */
     .header-section {{
         background-color: #ffffff;
-        padding: 40px 20px 30px 20px;
+        padding: 30px 20px;
         text-align: center;
         border-bottom: 3px solid {BTN_COLOR};
-        margin-bottom: 30px;
+        margin-bottom: 20px;
     }}
 
     html, body, [class*="css"], .stMarkdown, p, h1, h2, h3 {{
@@ -35,18 +35,37 @@ st.markdown(f"""
         text-align: center;
     }}
 
+    /* PRISILNO CENTRIRANJE VSEH GUMBOV V BLOKU */
+    [data-testid="stVerticalBlock"] > div {{
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 0px !important; /* Zmanjšan razmik med elementi */
+    }}
+
     /* STIL ZA GUMBE */
     div.stButton > button {{
         background-color: {BTN_COLOR} !important;
         color: {TEXT_COLOR} !important;
         border-radius: 25px !important;
         border: none !important;
-        width: 100% !important;
+        width: 220px !important; /* Fiksna širina za lepši izgled na sredini */
         font-family: 'Patrick Hand', cursive !important;
-        box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
         font-size: 22px !important;
-        padding: 10px !important;
-        margin: 5px 0 !important;
+        padding: 8px !important;
+        margin: 5px 0 !important; /* Majhen razmik med gumbi */
+        box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
+    }}
+
+    /* IZJEMA ZA NAVIGACIJO V IGRI (da ostanejo v vrsti) */
+    .game-nav [data-testid="column"] [data-testid="stVerticalBlock"] > div {{
+        flex-direction: row !important;
+        gap: 5px !important;
+    }}
+    
+    .game-nav div.stButton > button {{
+        width: 100% !important;
+        font-size: 18px !important;
     }}
 
     /* KARTICA */
@@ -56,7 +75,7 @@ st.markdown(f"""
         border-radius: 30px;
         border: 2px solid {BTN_COLOR};
         text-align: center;
-        margin: 20px auto;
+        margin: 15px auto;
         min-height: 200px;
         max-width: 500px;
         display: flex;
@@ -109,59 +128,50 @@ def toggle_fav(q):
 # --- STRANI ---
 
 if st.session_state.page == "main":
-    st.markdown(f'<div class="header-section"><h1 style="font-size: 42px;">ČAS ZA POGOVOR</h1><p>✨ Za povezanost na globlji ravni ✨</p></div>', unsafe_allow_html=True)
-    
-    st.markdown(f"<h2 style='font-size: 32px; margin-bottom: 20px;'>IZBERI KATEGORIJO:</h2>", unsafe_allow_html=True)
+    st.markdown(f'<div class="header-section"><h1 style="font-size: 42px;">ČAS ZA POGOVOR</h1><p>✨ Za povezanost ✨</p></div>', unsafe_allow_html=True)
+    st.markdown(f"<h2 style='font-size: 32px; margin-bottom: 15px;'>KATEGORIJA:</h2>", unsafe_allow_html=True)
     
     for cat in sorted(questions.keys()):
-        # CENTRIRANJE GUMBOV PREKO STOLPCEV
-        col_l, col_m, col_r = st.columns([1, 2, 1])
-        with col_m:
-            if st.button(cat.upper()):
-                st.session_state.category = cat
-                st.session_state.page = "count_selection"
-                st.rerun()
+        if st.button(cat.upper()):
+            st.session_state.category = cat
+            st.session_state.page = "count_selection"
+            st.rerun()
             
     if st.session_state.favorites:
         st.write("---")
-        col_l, col_m, col_r = st.columns([1, 2, 1])
-        with col_m:
-            if st.button("⭐ PRILJUBLJENE"):
-                st.session_state.category = "PRILJUBLJENE"
-                st.session_state.deck = st.session_state.favorites.copy()
-                random.shuffle(st.session_state.deck)
-                st.session_state.index = 0
-                st.session_state.page = "game"
-                st.rerun()
+        if st.button("⭐ PRILJUBLJENE"):
+            st.session_state.category = "PRILJUBLJENE"
+            st.session_state.deck = st.session_state.favorites.copy()
+            random.shuffle(st.session_state.deck)
+            st.session_state.index = 0
+            st.session_state.page = "game"
+            st.rerun()
 
 elif st.session_state.page == "count_selection":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 38px;">{st.session_state.category}</h1></div>', unsafe_allow_html=True)
-    st.markdown('<p style="font-size: 22px; margin-top: 20px;">Koliko kartic?</p>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size: 22px; margin-top: 10px;">Koliko kartic?</p>', unsafe_allow_html=True)
     for opt in [5, 10, "Vse"]:
-        col_l, col_m, col_r = st.columns([1, 2, 1])
-        with col_m:
-            if st.button(f"Igraj {opt}"):
-                q_list = questions[st.session_state.category]
-                n = len(q_list) if opt == "Vse" else opt
-                st.session_state.deck = random.sample(q_list, min(n, len(q_list)))
-                st.session_state.index = 0
-                st.session_state.page = "game"
-                st.rerun()
-    col_l, col_m, col_r = st.columns([1, 2, 1])
-    with col_m:
-        if st.button("< Nazaj"):
-            st.session_state.page = "main"
+        if st.button(f"Igraj {opt}"):
+            q_list = questions[st.session_state.category]
+            n = len(q_list) if opt == "Vse" else opt
+            st.session_state.deck = random.sample(q_list, min(n, len(q_list)))
+            st.session_state.index = 0
+            st.session_state.page = "game"
             st.rerun()
+    if st.button("< Nazaj"):
+        st.session_state.page = "main"
+        st.rerun()
 
 elif st.session_state.page == "game":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 34px;">{st.session_state.category}</h1></div>', unsafe_allow_html=True)
     if st.session_state.index < len(st.session_state.deck):
         current_q = st.session_state.deck[st.session_state.index]
         st.write(f"Kartica {st.session_state.index + 1} od {len(st.session_state.deck)}")
-        st.markdown(f'<div class="q-card"><p style="font-size: 28px; font-weight: bold;">{current_q}</p></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="q-card"><p style="font-size: 26px; font-weight: bold;">{current_q}</p></div>', unsafe_allow_html=True)
         
-        # GUMBI V ENI VRSTICI (Uporabimo ožje odmike)
-        c1, c2, c3, c4 = st.columns([1, 1.1, 0.7, 1.4])
+        # Navigacija v eni vrsti
+        st.markdown('<div class="game-nav">', unsafe_allow_html=True)
+        c1, c2, c3, c4 = st.columns([1, 1.1, 0.7, 1.3])
         with c1:
             if st.button("<"):
                 if st.session_state.index > 0:
@@ -180,11 +190,10 @@ elif st.session_state.page == "game":
             if st.button("Naprej"):
                 st.session_state.index += 1
                 st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
     else:
         st.balloons()
-        st.markdown("<h2 style='margin-top: 50px;'>Konec! ❤️</h2>", unsafe_allow_html=True)
-        col_l, col_m, col_r = st.columns([1, 2, 1])
-        with col_m:
-            if st.button("Domov"):
-                st.session_state.page = "main"
-                st.rerun()
+        st.markdown("<h2 style='margin-top: 30px;'>Konec! ❤️</h2>", unsafe_allow_html=True)
+        if st.button("Domov"):
+            st.session_state.page = "main"
+            st.rerun()
