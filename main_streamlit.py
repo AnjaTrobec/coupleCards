@@ -12,7 +12,7 @@ CARD_COLOR = "#fff2f5"
 BTN_COLOR = "#f2bfc9"     
 TEXT_COLOR = "#993366"    
 
-# 3. POENOSTAVLJEN CSS (Samo za barve in fonte, brez hecanja s pozicijami)
+# 3. CSS STIL
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
@@ -110,7 +110,6 @@ if st.session_state.page == "main":
     st.markdown(f"<h2 style='font-size: 32px; margin-bottom: 20px;'>KATEGORIJA:</h2>", unsafe_allow_html=True)
     
     for cat in sorted(questions.keys()):
-        # TRIK: Nevidni stolpci (lewo 20%, sredina 60%, desno 20%)
         l, m, r = st.columns([0.2, 0.6, 0.2])
         with m:
             if st.button(cat.upper()):
@@ -157,7 +156,6 @@ elif st.session_state.page == "game":
         st.write(f"Kartica {st.session_state.index + 1} od {len(st.session_state.deck)}")
         st.markdown(f'<div class="q-card"><p style="font-size: 26px; font-weight: bold;">{current_q}</p></div>', unsafe_allow_html=True)
         
-        # GUMBI V VRSTI (Tukaj ne spreminjamo, ker morajo biti vodoravno)
         c1, c2, c3, c4 = st.columns([1, 1.1, 0.7, 1.3])
         with c1:
             if st.button("<"):
@@ -173,9 +171,6 @@ elif st.session_state.page == "game":
             if st.button("⭐" if is_f else "☆"):
                 toggle_fav(current_q)
                 st.rerun()
-        with col4: # Popravek: tukaj mora biti col4 ali c4, uporabi c4
-            pass
-        # Popravek za tvojo kodo, da ne bo Errorja:
         with c4:
             if st.button("Naprej"):
                 st.session_state.index += 1
