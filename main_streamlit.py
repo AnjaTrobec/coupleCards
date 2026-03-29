@@ -3,19 +3,22 @@ import pandas as pd
 import random
 import os
 
+# --- KONFIGURACIJA STRANI ---
+st.set_page_config(page_title="Najina Pot", page_icon="❤️")
 
+# Meta oznake za iPhone "App" način
 st.markdown("""
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     """, unsafe_allow_html=True)
 
-st.set_page_config(page_title="Najina Pot", page_icon="❤️")
-
+# --- BARVE ---
 BG_COLOR = "#f5f2ee"      # (0.96, 0.93, 0.90)
 CARD_COLOR = "#fff2f5"    # (1, 0.95, 0.96)
 BTN_COLOR = "#f2bfc9"     # (0.95, 0.75, 0.80)
 TEXT_COLOR = "#993366"    # (0.6, 0.2, 0.4)
 
+# --- CSS STIL (Patrick Hand font in poravnava) ---
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
@@ -29,6 +32,7 @@ st.markdown(f"""
         color: {TEXT_COLOR};
     }}
 
+    /* Gumbi čez celo vrstico */
     .stButton>button {{
         background-color: {BTN_COLOR};
         color: {TEXT_COLOR};
@@ -36,13 +40,15 @@ st.markdown(f"""
         border: none;
         font-weight: bold;
         width: 100% !important;
+        min-width: 100%;
         display: block;
         margin: 10px 0;
         font-family: 'Patrick Hand', cursive !important;
-        font-size: 24px !important;
-        padding: 10px;
+        font-size: 26px !important;
+        padding: 15px;
     }}
 
+    /* Kartica z vprašanjem */
     .q-card {{
         background-color: {CARD_COLOR};
         padding: 40px;
@@ -50,7 +56,7 @@ st.markdown(f"""
         border: 2px solid {BTN_COLOR};
         text-align: center;
         margin: 20px 0;
-        min-height: 200px;
+        min-height: 250px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -67,6 +73,7 @@ st.markdown(f"""
 
 FAVORITES_FILE = "favorites.txt"
 
+# --- NALAGANJE PODATKOV ---
 def load_data():
     try:
         df = pd.read_csv("cards.csv", encoding="utf-8")
@@ -76,8 +83,11 @@ def load_data():
     
     favs = []
     if os.path.exists(FAVORITES_FILE):
-        with open(FAVORITES_FILE, "r", encoding="utf-8") as f:
-            favs = [line.strip() for line in f.readlines() if line.strip()]
+        try:
+            with open(FAVORITES_FILE, "r", encoding="utf-8") as f:
+                favs = [line.strip() for line in f.readlines() if line.strip()]
+        except:
+            favs = []
     return data, favs
 
 questions, favorites = load_data()
@@ -91,9 +101,12 @@ if 'favorites' not in st.session_state: st.session_state.favorites = favorites
 
 # --- FUNKCIJE ---
 def save_favorites():
-    with open(FAVORITES_FILE, "w", encoding="utf-8") as f:
-        for fav in st.session_state.favorites:
-            f.write(fav + "\n")
+    try:
+        with open(FAVORITES_FILE, "w", encoding="utf-8") as f:
+            for fav in st.session_state.favorites:
+                f.write(fav + "\n")
+    except:
+        pass
 
 def toggle_fav(q):
     if q in st.session_state.favorites:
@@ -104,11 +117,13 @@ def toggle_fav(q):
 
 # --- STRAN: GLAVNI MENI ---
 if st.session_state.page == "main":
-    st.markdown("<h1 style='text-align: center;'>ČAS ZA POGOVOR</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center;'>✨ Za povezanost na globji ravni ✨</p>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; font-size: 50px;'>ČAS ZA POGOVOR</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; font-size: 24px;'>✨ Za povezanost na globlji ravni ✨</p>", unsafe_allow_html=True)
     
     st.write("---")
-    st.subheader("IZBERI KATEGORIJO:")
+    
+    # VEČJI NASLOV ZA KATEGORIJE
+    st.markdown(f"<h2 style='text-align: center; color: {TEXT_COLOR}; font-size: 40px;'>IZBERI KATEGORIJO:</h2>", unsafe_allow_html=True)
     
     categories = sorted([c for c in questions.keys()])
     for cat in categories:
@@ -118,7 +133,8 @@ if st.session_state.page == "main":
             st.rerun()
             
     if st.session_state.favorites:
-        if st.button("⭐ PRILJUBLJENE", type="primary"):
+        st.write("---")
+        if st.button("⭐ PRILJUBLJENE"):
             st.session_state.category = "PRILJUBLJENE"
             st.session_state.deck = st.session_state.favorites.copy()
             random.shuffle(st.session_state.deck)
@@ -128,10 +144,10 @@ if st.session_state.page == "main":
 
 # --- STRAN: IZBIRA ŠTEVILA KARTIC ---
 elif st.session_state.page == "count_selection":
-    st.title(f"Kategorija: {st.session_state.category}")
+    st.markdown(f"<h1 style='text-align: center;'>{st.session_state.category}</h1>", unsafe_allow_html=True)
     count_options = [5, 10, "Vse"]
     
-    st.write("Koliko kartic želita vleči?")
+    st.markdown("<p style='text-align: center; font-size: 24px;'>Koliko kartic želita vleči?</p>", unsafe_allow_html=True)
     for opt in count_options:
         if st.button(f"Igraj {opt} kartic"):
             q_list = questions[st.session_state.category]
@@ -141,7 +157,7 @@ elif st.session_state.page == "count_selection":
             st.session_state.page = "game"
             st.rerun()
     
-    if st.button("< Nazaj na kategorije"):
+    if st.button("< Nazaj"):
         st.session_state.page = "main"
         st.rerun()
 
@@ -150,7 +166,7 @@ elif st.session_state.page == "game":
     if st.session_state.index < len(st.session_state.deck):
         current_q = st.session_state.deck[st.session_state.index]
         
-        st.write(f"**{st.session_state.category}** ({st.session_state.index + 1} / {len(st.session_state.deck)})")
+        st.markdown(f"<p style='text-align: center; font-size: 22px;'><b>{st.session_state.category}</b> ({st.session_state.index + 1} / {len(st.session_state.deck)})</p>", unsafe_allow_html=True)
         
         # Prikaz kartice
         st.markdown(f"""
@@ -159,11 +175,11 @@ elif st.session_state.page == "game":
             </div>
             """, unsafe_allow_html=True)
         
-        # Navigacijski gumbi
-        col1, col2, col3, col4 = st.columns([1.5, 1, 1, 1.5])
+        # Navigacijski gumbi v eni vrstici
+        col1, col2, col3, col4 = st.columns([1, 1, 0.6, 1.2])
         
         with col1:
-            if st.button("< Nazaj"):
+            if st.button("<"):
                 if st.session_state.index > 0:
                     st.session_state.index -= 1
                     st.rerun()
@@ -185,7 +201,7 @@ elif st.session_state.page == "game":
                 st.rerun()
     else:
         st.balloons()
-        st.markdown("<h2 style='text-align: center;'>Prišla sta do konca! ❤️</h2>", unsafe_allow_html=True)
-        if st.button("Nazaj na začetek", use_container_width=True):
+        st.markdown("<h2 style='text-align: center; font-size: 40px;'>Prišla sta do konca! ❤️</h2>", unsafe_allow_html=True)
+        if st.button("Nazaj na začetek"):
             st.session_state.page = "main"
             st.rerun()
