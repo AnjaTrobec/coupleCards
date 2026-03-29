@@ -3,19 +3,16 @@ import pandas as pd
 import random
 import os
 
-# 1. VARNA DEFINICIJA SRČKA
-HEART_ICON = "❤️"
-
-# 2. KONFIGURACIJA STRANI
+# 1. KONFIGURACIJA STRANI
 st.set_page_config(page_title="Najina Pot", page_icon="❤️", layout="wide")
 
-# 3. DEFINICIJA BARV
+# 2. DEFINICIJA BARV
 BG_COLOR = "#f5f2ee"      
 CARD_COLOR = "#fff2f5"    
 BTN_COLOR = "#f2bfc9"     
 TEXT_COLOR = "#993366"    
 
-# 4. CELOTEN CSS STIL
+# 3. CELOTEN CSS STIL (Vključno z lastno animacijo srčkov)
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
@@ -37,14 +34,6 @@ st.markdown(f"""
         text-align: center !important;
     }}
 
-    /* CENTRIRANJE */
-    [data-testid="stVerticalBlock"] {{
-        align-items: center !important;
-        display: flex !important;
-        flex-direction: column !important;
-    }}
-
-    /* GUMBI */
     div.stButton > button {{
         background-color: {BTN_COLOR} !important;
         color: {TEXT_COLOR} !important;
@@ -79,26 +68,37 @@ st.markdown(f"""
         justify-content: center;
     }}
 
-    /* --- BRUTALNA SPREMEMBA BALONOV V SRČKE --- */
-    /* Skrijemo vse balone */
-    [data-testid="stBalloon"] {{
-        background-image: none !important;
-        background-color: transparent !important;
-        box-shadow: none !important;
+    /* --- ANIMACIJA LETEČIH SRČKOV --- */
+    @keyframes hearts-fly {{
+        0% {{ transform: translateY(100vh) scale(0); opacity: 1; }}
+        100% {{ transform: translateY(-100vh) scale(1.5); opacity: 0; }}
     }}
 
-    /* Namesto balona izrišemo srček */
-    [data-testid="stBalloon"]::after {{
-        content: "{HEART_ICON}" !important;
-        font-size: 40px !important;
-        display: block !important;
+    .heart-particle {{
+        position: fixed;
+        bottom: 0;
+        color: #ff4b4b;
+        font-size: 30px;
+        user-select: none;
+        pointer-events: none;
+        z-index: 9999;
+        animation: hearts-fly 4s linear forwards;
     }}
 
     #MainMenu, footer, header {{visibility: hidden;}}
     </style>
     """, unsafe_allow_html=True)
 
-# 5. LOGIKA PODATKOV
+# Funkcija za sprožitev srčkov (HTML verzija)
+def trigger_custom_hearts():
+    heart_html = ""
+    for i in range(25): # Število srčkov
+        left = random.randint(0, 100)
+        delay = random.uniform(0, 3)
+        heart_html += f'<div class="heart-particle" style="left: {left}%; animation-delay: {delay}s;">❤️</div>'
+    st.markdown(heart_html, unsafe_allow_html=True)
+
+# 4. LOGIKA PODATKOV
 FAVORITES_FILE = "favorites.txt"
 def load_data():
     try:
@@ -141,7 +141,6 @@ def toggle_fav(q):
 if st.session_state.page == "main":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 42px;">ČAS ZA POGOVOR</h1><p>✨ Za povezanost ✨</p></div>', unsafe_allow_html=True)
     st.markdown(f"<h2 style='font-size: 32px; margin-top: 10px;'>KATEGORIJA:</h2>", unsafe_allow_html=True)
-    
     for cat in sorted(questions.keys()):
         if st.button(cat.upper()):
             st.session_state.category = cat
@@ -202,7 +201,8 @@ elif st.session_state.page == "game":
                 st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
     else:
-        st.balloons()  # Zdaj sprožimo balone, CSS jih bo spremenil v srčke!
+        # TUKAJ SPROŽIVA NAJINE SRČKE
+        trigger_custom_hearts()
         st.markdown("<h2 style='margin-top: 30px;'>Prišla sta do konca! ❤️</h2>", unsafe_allow_html=True)
         if st.button("Domov"):
             st.session_state.page = "main"
