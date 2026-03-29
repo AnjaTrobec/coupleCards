@@ -3,7 +3,12 @@ import pandas as pd
 import random
 import os
 
-# --- KONFIGURACIJA IZGLEDA (Barve iz tvoje Kivy kode) ---
+
+st.markdown("""
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    """, unsafe_allow_html=True)
+
 st.set_page_config(page_title="Najina Pot", page_icon="❤️")
 
 BG_COLOR = "#f5f2ee"      # (0.96, 0.93, 0.90)
@@ -39,7 +44,6 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- LOGIKA PODATKOV ---
 FAVORITES_FILE = "favorites.txt"
 
 def load_data():
@@ -79,8 +83,8 @@ def toggle_fav(q):
 
 # --- STRAN: GLAVNI MENI ---
 if st.session_state.page == "main":
-    st.markdown("<h1 style='text-align: center;'>ČAS ZA NAJIN POGOVOR</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center;'>Povežita se na globlji ravni ✨</p>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center;'>ČAS ZA POGOVOR</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center;'>✨ Za povezanost na globji ravni ✨</p>", unsafe_allow_html=True)
     
     st.write("---")
     st.subheader("IZBERI KATEGORIJO:")
