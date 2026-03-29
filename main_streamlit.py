@@ -12,7 +12,7 @@ CARD_COLOR = "#fff2f5"
 BTN_COLOR = "#f2bfc9"     
 TEXT_COLOR = "#993366"    
 
-# 3. CSS STIL - DODAN STIL ZA IKONO NA VRHU
+# 3. OSVEŽEN CSS - STABILNO CENTRIRANJE + MAJHNA IKONA
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
@@ -24,10 +24,10 @@ st.markdown(f"""
         padding: 0 !important;
     }}
 
-    /* HEADER */
+    /* HEADER - Raztegnjen čez celo širino */
     .header-section {{
         background-color: #ffffff;
-        padding: 30px 0 30px 0; /* Malo manj paddinga, ker je slika zgoraj */
+        padding: 30px 0 25px 0;
         text-align: center;
         width: 100vw;
         position: relative;
@@ -39,11 +39,11 @@ st.markdown(f"""
         margin-bottom: 30px;
     }}
 
-    /* STIL ZA IKONO SRČKA NA VRHU (Centriranje in velikost) */
-    [data-testid="stImage"] {{
-        margin-left: auto !important;
-        margin-right: auto !important;
-        margin-bottom: -15px !important; /* Da se naslov približa ikoni */
+    /* MAJHNA IKONA SRČKA */
+    .top-icon-container img {{
+        max-width: 50px !important;
+        margin: 0 auto 10px auto !important;
+        display: block !important;
     }}
 
     html, body, [class*="css"], .stMarkdown, p, h1, h2, h3 {{
@@ -52,7 +52,7 @@ st.markdown(f"""
         text-align: center !important;
     }}
 
-    /* CENTRIRANJE KATEGORIJ */
+    /* ZMAGOVALNO CENTRIRANJE IZ PREDZADNJE VERZIJE */
     [data-testid="stVerticalBlock"] > div {{
         display: flex !important;
         flex-direction: column !important;
@@ -72,25 +72,14 @@ st.markdown(f"""
         padding: 10px !important;
         margin: 5px auto !important;
         box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
-        font-family: 'Patrick Hand', cursive !important;
     }}
 
-    /* ANIMACIJA: SAMO LETENJE (IPHONE FIX) */
+    /* ANIMACIJA LETEČIH SRČKOV */
     @keyframes hearts-fly {{
-        0% {{ 
-            transform: translateY(0);
-            opacity: 0; 
-        }}
-        5% {{
-            opacity: 1;
-        }}
-        90% {{
-            opacity: 1;
-        }}
-        100% {{ 
-            transform: translateY(-120vh);
-            opacity: 0; 
-        }}
+        0% {{ transform: translateY(0); opacity: 0; }}
+        5% {{ opacity: 1; }}
+        95% {{ opacity: 1; }}
+        100% {{ transform: translateY(-120vh); opacity: 0; }}
     }}
 
     .heart-particle {{
@@ -98,8 +87,6 @@ st.markdown(f"""
         bottom: -100px;
         color: #ff4b4b;
         font-size: 35px;
-        user-select: none;
-        pointer-events: none;
         z-index: 99999 !important;
         -webkit-transform: translateZ(0);
         transform: translateZ(0);
@@ -119,8 +106,6 @@ st.markdown(f"""
         padding: 30px;
         border-radius: 30px;
         border: 2px solid {BTN_COLOR};
-        text-align: center;
-        margin: 15px auto;
         min-height: 200px;
         max-width: 500px;
         display: flex;
@@ -132,7 +117,7 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# Funkcija za srčke (brez vrstice, samo letenje)
+# Funkcija za srčke
 def trigger_custom_hearts():
     heart_html = ""
     for i in range(25):
@@ -140,14 +125,6 @@ def trigger_custom_hearts():
         delay = random.uniform(0, 2)
         heart_html += f'<div class="heart-particle" style="left: {left_pos}%; animation-delay: {delay}s;">❤️</div>'
     st.markdown(heart_html, unsafe_allow_html=True)
-
-# Funkcija za prikaz ikone na vrhu
-def show_top_icon():
-    # Preverimo, če slika obstaja, preden jo naložimo
-    if os.path.exists("image_7.png"):
-        st.image("image_7.png", width=120, use_column_width=False) # Prilagodi širino, če je treba
-    else:
-        st.error("Manjka slika image_7.png v mapi!")
 
 # --- LOGIKA PODATKOV ---
 FAVORITES_FILE = "favorites.txt"
@@ -189,15 +166,17 @@ def toggle_fav(q):
 
 # --- STRANI ---
 
-# STRAN 1: GLAVNI MENI Z IKONO
 if st.session_state.page == "main":
+    # HEADER SECTION
     st.markdown('<div class="header-section">', unsafe_allow_html=True)
     
-    # 1. Prikaževa ikono srčka na vrhu
-    show_top_icon()
+    # Ikona srčka (v belem delu)
+    if os.path.exists("heart.png"):
+        st.markdown('<div class="top-icon-container">', unsafe_allow_html=True)
+        st.image("heart.png", width=50)
+        st.markdown('</div>', unsafe_allow_html=True)
     
-    # 2. Prikaževa naslov
-    st.markdown(f'<h1 style="font-size: 42px; margin: 0;">ČAS ZA POGOVOR</h1><p style="font-size: 18px; margin-top: 5px; opacity: 0.8;">✨ Za povezanost ✨</p>', unsafe_allow_html=True)
+    st.markdown(f'<h1 style="font-size: 42px; margin: 0;">ČAS ZA NAJU</h1><p style="font-size: 18px; margin-top: 5px; opacity: 0.8;">✨ Pogovor, ki povezuje ✨</p>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
     
     st.markdown(f"<h2 style='font-size: 32px; margin-bottom: 20px;'>IZBERI KATEGORIJO:</h2>", unsafe_allow_html=True)
@@ -218,7 +197,6 @@ if st.session_state.page == "main":
             st.session_state.page = "game"
             st.rerun()
 
-# STRAN 2: IZBIRA ŠTEVILA KARTIC
 elif st.session_state.page == "count_selection":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 38px; margin: 0;">{st.session_state.category}</h1></div>', unsafe_allow_html=True)
     st.markdown('<p style="font-size: 22px; margin-top: 20px;">Koliko kartic?</p>', unsafe_allow_html=True)
@@ -234,7 +212,6 @@ elif st.session_state.page == "count_selection":
         st.session_state.page = "main"
         st.rerun()
 
-# STRAN 3: IGRA
 elif st.session_state.page == "game":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 34px; margin: 0;">{st.session_state.category}</h1></div>', unsafe_allow_html=True)
     if st.session_state.index < len(st.session_state.deck):
@@ -255,18 +232,18 @@ elif st.session_state.page == "game":
                 st.rerun()
         with c3:
             is_f = current_q in st.session_state.favorites
-            if st.button("⭐" if is_f else "☆"):
+            heart_icon = "❤️" if is_f else "🤍"
+            if st.button(heart_icon):
                 toggle_fav(current_q)
                 st.rerun()
-        with col4:
+        with c4:
             if st.button("Naprej"):
                 st.session_state.index += 1
                 st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
     else:
-        # SPROŽIVA SAMO LETEČE SRČKE
         trigger_custom_hearts()
-        st.markdown("<h2 style='margin-top: 30px;'>Prišla sta do konca! ❤️</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='margin-top: 30px;'>Konec! ❤️</h2>", unsafe_allow_html=True)
         if st.button("Domov"):
             st.session_state.page = "main"
             st.rerun()
