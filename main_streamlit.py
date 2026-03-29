@@ -18,20 +18,20 @@ TEXT_COLOR = "#993366"    # (0.6, 0.2, 0.4)
 
 st.markdown(f"""
     <style>
-    /* Uvoz pisave iz Google Fonts */
+    /* Uvoz pisave */
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
 
+    /* Vse CSS oklepaje podvojimo {{ }}, spremenljivke pa pustimo v enojnih { } */
     .stApp {{ 
         background-color: {BG_COLOR}; 
     }}
 
-    /* Uporaba pisave za celo aplikacijo */
     html, body, [class*="css"], .stMarkdown, p, h1, h2, h3, button {{
         font-family: 'Patrick Hand', cursive !important;
         color: {TEXT_COLOR};
     }}
 
-    .stButton>button {
+    .stButton>button {{
         background-color: {BTN_COLOR};
         color: {TEXT_COLOR};
         border-radius: 20px;
@@ -43,13 +43,7 @@ st.markdown(f"""
         font-family: 'Patrick Hand', cursive !important;
         font-size: 24px !important;
         padding: 10px;
-    }
-
-    /* Poseben stil za navigacijske gumbe v vrstici, da niso preveliki */
-    .nav-col button {
-        font-size: 18px !important;
-        padding: 5px !important;
-    }
+    }}
 
     .q-card {{
         background-color: {CARD_COLOR};
