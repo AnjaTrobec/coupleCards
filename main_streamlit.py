@@ -12,25 +12,23 @@ CARD_COLOR = "#fff2f5"
 BTN_COLOR = "#f2bfc9"     
 TEXT_COLOR = "#993366"    
 
-# 3. CSS STIL - KONČNA VERZIJA ZA CELOZASLONSKI HEADER
+# 3. CSS STIL - POPRAVLJEN ZA IPHONE (SRČKI SAMO LETIJO)
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
 
     .stApp {{ background-color: {BG_COLOR}; }}
     
-    /* Osrednji kontejner Streamlita */
     .block-container {{
-        max-width: 800px !important; /* Omejimo širino vsebine na sredino */
+        max-width: 800px !important;
         padding: 0 !important;
     }}
 
-    /* MAGIČNI HEADER - Raztegnjen čez robove kljub omejeni širini spodaj */
     .header-section {{
         background-color: #ffffff;
         padding: 40px 0 30px 0;
         text-align: center;
-        width: 100vw; /* Celotna širina zaslona */
+        width: 100vw;
         position: relative;
         left: 50%;
         right: 50%;
@@ -46,7 +44,7 @@ st.markdown(f"""
         text-align: center !important;
     }}
 
-    /* CENTRIRANJE GUMBOV */
+    /* CENTRIRANJE KATEGORIJ */
     [data-testid="stVerticalBlock"] > div {{
         display: flex !important;
         flex-direction: column !important;
@@ -55,7 +53,6 @@ st.markdown(f"""
         width: 100% !important;
     }}
 
-    /* STIL ZA GUMBE */
     div.stButton > button {{
         background-color: {BTN_COLOR} !important;
         color: {TEXT_COLOR} !important;
@@ -70,30 +67,38 @@ st.markdown(f"""
         font-family: 'Patrick Hand', cursive !important;
     }}
 
-    /* ANIMACIJA LETEČIH SRČKOV */
+    /* --- ANIMACIJA: SAMO LETENJE (IPHONE FIX) --- */
     @keyframes hearts-fly {{
         0% {{ 
-            bottom: -50px;
-            opacity: 1; 
+            transform: translateY(0);
+            opacity: 0; 
+        }}
+        5% {{
+            opacity: 1;
+        }}
+        90% {{
+            opacity: 1;
         }}
         100% {{ 
-            bottom: 110vh;
+            transform: translateY(-120vh);
             opacity: 0; 
         }}
     }}
 
     .heart-particle {{
         position: fixed;
-        left: 50%;
+        bottom: -100px; /* Začnejo globoko spodaj, da niso v vrstici */
         color: #ff4b4b;
         font-size: 35px;
         user-select: none;
         pointer-events: none;
         z-index: 99999 !important;
-        animation: hearts-fly 4s linear forwards;
+        /* Safari strojno pospeševanje */
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        animation: hearts-fly 4s ease-in forwards;
     }}
 
-    /* IZJEMA ZA IGRO: Stolpci vodoravno */
     .game-mode [data-testid="stHorizontalBlock"] {{
         flex-direction: row !important;
         align-items: stretch !important;
@@ -120,13 +125,13 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# Funkcija za srčke
+# Funkcija za srčke (brez vrstice, samo letenje)
 def trigger_custom_hearts():
     heart_html = ""
-    for i in range(20):
-        left = random.randint(0, 100)
-        delay = random.uniform(0, 3)
-        heart_html += f'<div class="heart-particle" style="left: {left}%; animation-delay: {delay}s;">❤️</div>'
+    for i in range(25):
+        left_pos = random.randint(5, 95)
+        delay = random.uniform(0, 2) # Različen čas vzleta, da ne gredo vsi hkrati
+        heart_html += f'<div class="heart-particle" style="left: {left_pos}%; animation-delay: {delay}s;">❤️</div>'
     st.markdown(heart_html, unsafe_allow_html=True)
 
 # --- LOGIKA PODATKOV ---
@@ -170,7 +175,7 @@ def toggle_fav(q):
 # --- STRANI ---
 
 if st.session_state.page == "main":
-    st.markdown(f'<div class="header-section"><h1 style="font-size: 42px; margin: 0;">ČAS ZA POGOVOR</h1><p style="font-size: 18px; margin-top: 5px; opacity: 0.8;">✨ Za povezanost na globlji ravni ✨</p></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="header-section"><h1 style="font-size: 42px; margin: 0;">ČAS ZA POGOVOR</h1><p style="font-size: 18px; margin-top: 5px; opacity: 0.8;">✨ Za povezanost ✨</p></div>', unsafe_allow_html=True)
     st.markdown(f"<h2 style='font-size: 32px; margin-bottom: 20px;'>IZBERI KATEGORIJO:</h2>", unsafe_allow_html=True)
     
     for cat in sorted(questions.keys()):
@@ -233,6 +238,7 @@ elif st.session_state.page == "game":
                 st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
     else:
+        # SPROŽIVA SAMO LETEČE SRČKE
         trigger_custom_hearts()
         st.markdown("<h2 style='margin-top: 30px;'>Prišla sta do konca! ❤️</h2>", unsafe_allow_html=True)
         if st.button("Domov"):
