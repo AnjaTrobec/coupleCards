@@ -7,12 +7,12 @@ import os
 st.set_page_config(page_title="Najina Pot", page_icon="❤️", layout="wide")
 
 # 2. DEFINICIJA BARV
-BG_COLOR = "#f5f2ee"      # Nežno krem ozadje
-CARD_COLOR = "#fff2f5"    # Barva kartic
-BTN_COLOR = "#f2bfc9"     # Rožnata za gumbe
-TEXT_COLOR = "#993366"    # Temno rožnata za tekst
+BG_COLOR = "#f5f2ee"      
+CARD_COLOR = "#fff2f5"    
+BTN_COLOR = "#f2bfc9"     
+TEXT_COLOR = "#993366"    
 
-# 3. CELOTEN CSS STIL
+# 3. CELOTEN CSS STIL (Popravljeno centriranje znotraj okvirčka)
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
@@ -28,7 +28,7 @@ st.markdown(f"""
         padding: 0 !important;
     }}
 
-    /* ZGORNJI DEL (Header) - Belo ozadje */
+    /* ZGORNJI DEL (Header) */
     .header-section {{
         background-color: #ffffff;
         padding: 40px 20px 30px 20px;
@@ -38,7 +38,7 @@ st.markdown(f"""
         margin-bottom: 20px;
     }}
 
-    /* SPODNJI DEL (Okvirček za gumbe) */
+    /* SPODNJI DEL (Okvirček za gumbe) - DODANO CENTRIRANJE */
     .menu-container {{
         background-color: #ffffff;
         margin: 10px 15px;
@@ -46,6 +46,11 @@ st.markdown(f"""
         border-radius: 30px;
         box-shadow: 0px 8px 20px rgba(0,0,0,0.05);
         border: 1px solid rgba(0,0,0,0.03);
+        
+        /* Centriranje vsebine znotraj okvirčka */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }}
 
     /* Globalni fonti */
@@ -54,7 +59,7 @@ st.markdown(f"""
         color: {TEXT_COLOR} !important;
     }}
 
-    /* GUMBI: Sredinska poravnava in stil */
+    /* GUMBI: Prisila na sredino in polno širino */
     div.stButton {{
         display: flex;
         justify-content: center;
@@ -72,11 +77,6 @@ st.markdown(f"""
         padding: 12px 20px !important;
         margin: 8px auto !important;
         box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
-        transition: transform 0.2s ease;
-    }}
-    
-    div.stButton > button:active {{
-        transform: scale(0.98);
     }}
 
     /* KARTICA Z VPRAŠANJEM */
@@ -92,13 +92,11 @@ st.markdown(f"""
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0px 5px 15px rgba(0,0,0,0.03);
     }}
 
     .q-text {{ 
         font-size: 32px !important; 
         font-weight: bold;
-        line-height: 1.2;
     }}
 
     /* Skrijemo Streamlit elemente */
@@ -126,7 +124,6 @@ def load_data():
 
 questions, favorites = load_data()
 
-# Session state
 if 'page' not in st.session_state: st.session_state.page = "main"
 if 'index' not in st.session_state: st.session_state.index = 0
 if 'deck' not in st.session_state: st.session_state.deck = []
@@ -149,9 +146,7 @@ def toggle_fav(q):
 
 # --- STRANI ---
 
-# GLAVNI MENI
 if st.session_state.page == "main":
-    # Header na belem ozadju
     st.markdown(f"""
         <div class="header-section">
             <h1 style='font-size: 48px; margin: 0;'>ČAS ZA POGOVOR</h1>
@@ -159,7 +154,7 @@ if st.session_state.page == "main":
         </div>
         """, unsafe_allow_html=True)
     
-    # Kontejner za gumbe
+    # POMEMBNO: Gumbi morajo biti znotraj tega div-a
     st.markdown('<div class="menu-container">', unsafe_allow_html=True)
     st.markdown(f"<h2 style='text-align: center; color: {TEXT_COLOR}; font-size: 36px; margin-bottom: 20px;'>IZBERI KATEGORIJO:</h2>", unsafe_allow_html=True)
     
@@ -181,10 +176,8 @@ if st.session_state.page == "main":
             st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
 
-# IZBIRA ŠTEVILA
 elif st.session_state.page == "count_selection":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 42px;">{st.session_state.category}</h1></div>', unsafe_allow_html=True)
-    
     st.markdown('<div class="menu-container">', unsafe_allow_html=True)
     st.markdown('<p style="text-align: center; font-size: 24px;">Koliko kartic želita vleči?</p>', unsafe_allow_html=True)
     for opt in [5, 10, "Vse"]:
@@ -195,23 +188,18 @@ elif st.session_state.page == "count_selection":
             st.session_state.index = 0
             st.session_state.page = "game"
             st.rerun()
-    
     if st.button("< Nazaj"):
         st.session_state.page = "main"
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
 
-# IGRA
 elif st.session_state.page == "game":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 38px;">{st.session_state.category}</h1></div>', unsafe_allow_html=True)
-    
     if st.session_state.index < len(st.session_state.deck):
         current_q = st.session_state.deck[st.session_state.index]
-        
         st.markdown(f"<p style='text-align: center; margin-top: 15px;'>Kartica {st.session_state.index + 1} od {len(st.session_state.deck)}</p>", unsafe_allow_html=True)
         st.markdown(f'<div class="q-card"><p class="q-text">{current_q}</p></div>', unsafe_allow_html=True)
         
-        # Navigacija
         col1, col2, col3, col4 = st.columns([1, 1, 0.7, 1.2])
         with col1:
             if st.button("<"):
