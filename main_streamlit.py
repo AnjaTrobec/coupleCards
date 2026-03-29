@@ -12,26 +12,19 @@ CARD_COLOR = "#fff2f5"
 BTN_COLOR = "#f2bfc9"     
 TEXT_COLOR = "#993366"    
 
-# 3. CELOTEN CSS STIL
+# 3. LOČENI CSS STILI
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
 
-    .stApp {{ 
-        background-color: {BG_COLOR}; 
-    }}
-
-    .block-container {{
-        max-width: 100% !important;
-        padding: 0 !important;
-    }}
+    .stApp {{ background-color: {BG_COLOR}; }}
+    .block-container {{ max-width: 100% !important; padding: 0 !important; }}
 
     /* HEADER */
     .header-section {{
         background-color: #ffffff;
         padding: 40px 20px 30px 20px;
         text-align: center;
-        width: 100%;
         border-bottom: 3px solid {BTN_COLOR};
         margin-bottom: 30px;
     }}
@@ -42,69 +35,73 @@ st.markdown(f"""
         text-align: center;
     }}
 
-    /* CENTRIRANJE ZA GLAVNI MENI (Kategorije) */
+    /* --- STIL 1: GLAVNI MENI (Navpično centriranje) --- */
     .main-menu-container [data-testid="stVerticalBlock"] > div {{
-        display: flex;
-        flex-direction: column;
+        display: flex !important;
+        flex-direction: column !important;
         align-items: center !important;
-        width: 100%;
+        width: 100% !important;
     }}
 
-    /* STIL ZA GUMBE */
+    /* --- STIL 2: IGRA (Vodoravna vrsta brez prisilnega centriranja) --- */
+    .game-controls [data-testid="column"] [data-testid="stVerticalBlock"] > div {{
+        display: block !important; /* Povrne privzeto Streamlit obnašanje */
+    }}
+
+    /* SPLOŠNI STIL ZA GUMBE */
     div.stButton > button {{
         background-color: {BTN_COLOR} !important;
         color: {TEXT_COLOR} !important;
         border-radius: 25px !important;
         border: none !important;
-        width: 100% !important;
-        font-size: 24px !important;
-        padding: 12px 10px !important;
-        margin: 5px 0 !important;
-        box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
         font-family: 'Patrick Hand', cursive !important;
+        box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
     }}
 
-    /* GUMBI V VRSTICI (Igra) - zmanjšamo font, da grejo v vrsto */
+    /* Gumbi v meniju (večji) */
+    .main-menu-container div.stButton > button {{
+        width: 100% !important;
+        max-width: 400px !important;
+        font-size: 26px !important;
+        padding: 12px !important;
+        margin: 10px auto !important;
+    }}
+
+    /* Gumbi v igri (manjši in v vrsti) */
     .game-controls div.stButton > button {{
         font-size: 18px !important;
-        padding: 8px 2px !important;
-        max-width: 100% !important;
+        padding: 10px 2px !important;
+        width: 100% !important;
+        margin: 0 !important;
     }}
 
-    /* KARTICA Z VPRAŠANJEM */
+    /* KARTICA */
     .q-card {{
         background-color: {CARD_COLOR};
         padding: 30px;
         border-radius: 30px;
         border: 2px solid {BTN_COLOR};
         text-align: center;
-        margin: 15px auto;
+        margin: 20px auto;
         min-height: 200px;
         max-width: 500px;
         display: flex;
         align-items: center;
         justify-content: center;
     }}
-
-    .q-text {{ 
-        font-size: 28px !important; 
-        font-weight: bold;
-    }}
-
+    
     #MainMenu, footer, header {{visibility: hidden;}}
     </style>
     """, unsafe_allow_html=True)
 
 # 4. LOGIKA PODATKOV
 FAVORITES_FILE = "favorites.txt"
-
 def load_data():
     try:
         df = pd.read_csv("cards.csv", encoding="utf-8")
         data = df.groupby("EDITION")["QUESTION"].apply(list).to_dict()
     except:
-        data = {"Info": ["Manjka cards.csv!"]}
-    
+        data = {{"Info": ["Manjka cards.csv!"]}}
     favs = []
     if os.path.exists(FAVORITES_FILE):
         try:
@@ -144,24 +141,20 @@ if st.session_state.page == "main":
     st.markdown(f"<h2 style='font-size: 32px; margin-bottom: 20px;'>IZBERI KATEGORIJO:</h2>", unsafe_allow_html=True)
     
     for cat in sorted(questions.keys()):
-        c1, c2, c3 = st.columns([0.1, 0.8, 0.1])
-        with c2:
-            if st.button(cat.upper()):
-                st.session_state.category = cat
-                st.session_state.page = "count_selection"
-                st.rerun()
+        if st.button(cat.upper()):
+            st.session_state.category = cat
+            st.session_state.page = "count_selection"
+            st.rerun()
             
     if st.session_state.favorites:
         st.write("---")
-        c1, c2, c3 = st.columns([0.1, 0.8, 0.1])
-        with c2:
-            if st.button("⭐ PRILJUBLJENE"):
-                st.session_state.category = "PRILJUBLJENE"
-                st.session_state.deck = st.session_state.favorites.copy()
-                random.shuffle(st.session_state.deck)
-                st.session_state.index = 0
-                st.session_state.page = "game"
-                st.rerun()
+        if st.button("⭐ PRILJUBLJENE"):
+            st.session_state.category = "PRILJUBLJENE"
+            st.session_state.deck = st.session_state.favorites.copy()
+            random.shuffle(st.session_state.deck)
+            st.session_state.index = 0
+            st.session_state.page = "game"
+            st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
 
 elif st.session_state.page == "count_selection":
@@ -169,20 +162,16 @@ elif st.session_state.page == "count_selection":
     st.markdown('<div class="main-menu-container">', unsafe_allow_html=True)
     st.markdown('<p style="font-size: 22px;">Število kartic:</p>', unsafe_allow_html=True)
     for opt in [5, 10, "Vse"]:
-        c1, c2, c3 = st.columns([0.1, 0.8, 0.1])
-        with c2:
-            if st.button(f"Igraj {opt}"):
-                q_list = questions[st.session_state.category]
-                n = len(q_list) if opt == "Vse" else opt
-                st.session_state.deck = random.sample(q_list, min(n, len(q_list)))
-                st.session_state.index = 0
-                st.session_state.page = "game"
-                st.rerun()
-    c1, c2, c3 = st.columns([0.1, 0.8, 0.1])
-    with c2:
-        if st.button("< Nazaj"):
-            st.session_state.page = "main"
+        if st.button(f"Igraj {opt}"):
+            q_list = questions[st.session_state.category]
+            n = len(q_list) if opt == "Vse" else opt
+            st.session_state.deck = random.sample(q_list, min(n, len(q_list)))
+            st.session_state.index = 0
+            st.session_state.page = "game"
             st.rerun()
+    if st.button("< Nazaj"):
+        st.session_state.page = "main"
+        st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
 
 elif st.session_state.page == "game":
@@ -190,7 +179,7 @@ elif st.session_state.page == "game":
     if st.session_state.index < len(st.session_state.deck):
         current_q = st.session_state.deck[st.session_state.index]
         st.write(f"Kartica {st.session_state.index + 1} od {len(st.session_state.deck)}")
-        st.markdown(f'<div class="q-card"><p class="q-text">{current_q}</p></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="q-card"><p style="font-size: 28px; font-weight: bold;">{current_q}</p></div>', unsafe_allow_html=True)
         
         # NAVIGACIJA V VRSTI
         st.markdown('<div class="game-controls">', unsafe_allow_html=True)
@@ -217,8 +206,6 @@ elif st.session_state.page == "game":
     else:
         st.balloons()
         st.markdown("<h2 style='margin-top: 50px;'>Konec! ❤️</h2>", unsafe_allow_html=True)
-        c1, c2, c3 = st.columns([0.1, 0.8, 0.1])
-        with c2:
-            if st.button("Nazaj"):
-                st.session_state.page = "main"
-                st.rerun()
+        if st.button("Nazaj"):
+            st.session_state.page = "main"
+            st.rerun()
