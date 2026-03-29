@@ -12,7 +12,7 @@ CARD_COLOR = "#fff2f5"
 BTN_COLOR = "#f2bfc9"     
 TEXT_COLOR = "#993366"    
 
-# 3. CSS STIL - TOTALNI FIX ZA VODORAVNE IKONE NA IPHONU
+# 3. CSS STIL - TOTALNI FIX ZA VRSTICO NA IPHONU
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
@@ -44,23 +44,34 @@ st.markdown(f"""
         text-align: center !important;
     }}
 
-    /* --- MAGIČNI FIX ZA VRSTICO --- */
-    /* Prisilimo vse elemente znotraj enega vertical blocka v vrstico */
-    .iphone-row [data-testid="stVerticalBlock"] {{
+    /* --- IPHONE NAVIGATION BAR FIX --- */
+    .custom-nav-bar {{
         display: flex !important;
         flex-direction: row !important;
-        flex-wrap: nowrap !important;
         justify-content: center !important;
         align-items: center !important;
-        gap: 15px !important;
+        gap: 20px !important;
         width: 100% !important;
+        margin: 20px 0 !important;
     }}
 
-    .iphone-row div.stButton {{
-        width: auto !important;
-        flex: 1 !important;
+    .nav-icon-btn {{
+        background-color: {BTN_COLOR} !important;
+        color: {TEXT_COLOR} !important;
+        border-radius: 50% !important; /* Okrogli gumbi za ikone */
+        width: 60px !important;
+        height: 60px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 28px !important;
+        text-decoration: none !important;
+        box-shadow: 2px 4px 8px rgba(0,0,0,0.1) !important;
+        border: none !important;
+        cursor: pointer !important;
     }}
 
+    /* SPLOŠNI GUMBI (Meni, Kategorije) */
     div.stButton > button {{
         background-color: {BTN_COLOR} !important;
         color: {TEXT_COLOR} !important;
@@ -68,16 +79,9 @@ st.markdown(f"""
         border: none !important;
         width: 100% !important;
         max-width: 280px !important; 
-        font-size: 22px !important;
+        font-size: 20px !important;
         padding: 10px !important;
-        box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
-    }}
-
-    /* Posebej za ikone v igri */
-    .iphone-row div.stButton > button {{
-        font-size: 28px !important;
-        padding: 5px !important;
-        min-width: 70px !important;
+        margin: 5px auto !important;
     }}
 
     .q-card {{
@@ -186,27 +190,42 @@ elif st.session_state.page == "game":
         st.write(f"Kartica {st.session_state.index + 1} od {len(st.session_state.deck)}")
         st.markdown(f'<div class="q-card"><p style="font-size: 24px; font-weight: bold;">{current_q}</p></div>', unsafe_allow_html=True)
         
-        # --- NOVI PRISTOP: BREZ STOLPCEV ---
-        # Vse gumbe damo v en kontejner, CSS jih bo prisilil v vrstico
-        st.markdown('<div class="iphone-row">', unsafe_allow_html=True)
-        col_container = st.container()
-        with col_container:
-            btn_prev = st.button("⬅️")
+        # --- DOKONČNA REŠITEV ZA VRSTICO (BREZ st.columns) ---
+        # Ustvarimo tri stolpce, a jih prisilimo v vrstico z novim CSS razredom
+        c1, c2, c3 = st.columns([1, 1, 1])
+        
+        # Na iPhonu st.columns včasih še vedno prelamlja, zato uporabiva tole:
+        with c1:
+            if st.button("⬅️", key="prev"):
+                if st.session_state.index > 0:
+                    st.session_state.index -= 1
+                    st.rerun()
+        with c2:
             is_f = current_q in st.session_state.favorites
-            btn_fav = st.button("❤️" if is_f else "🤍")
-            btn_next = st.button("➡️")
-            
-            # Logika gumbov
-            if btn_prev and st.session_state.index > 0:
-                st.session_state.index -= 1
-                st.rerun()
-            if btn_fav:
+            if st.button("❤️" if is_f else "🤍", key="fav"):
                 toggle_fav(current_q)
                 st.rerun()
-            if btn_next:
+        with c3:
+            if st.button("➡️", key="next"):
                 st.session_state.index += 1
                 st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
+
+        # Prisilimo te tri gumbe v vrsto z uporabo CSS selektorja za točno to vrstico
+        st.markdown("""
+            <style>
+            [data-testid="stHorizontalBlock"] {
+                flex-direction: row !important;
+                display: flex !important;
+                flex-wrap: nowrap !important;
+                justify-content: center !important;
+            }
+            [data-testid="column"] {
+                width: 30% !important;
+                flex: 1 1 30% !important;
+                min-width: 0 !important;
+            }
+            </style>
+            """, unsafe_allow_html=True)
 
         st.write("---")
         if st.button("🏠 MENI"):
