@@ -12,16 +12,16 @@ CARD_COLOR = "#fff2f5"
 BTN_COLOR = "#f2bfc9"     
 TEXT_COLOR = "#993366"    
 
-# 3. CSS STIL - TOTALNI FIX ZA VRSTICO NA IPHONU
+# 3. CSS STIL - VRNJENA STABILNA SREDINSKA PORAVNAVA
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
 
-    .stApp {{ background-color: {BG_COLOR}; overflow-x: hidden !important; }}
+    .stApp {{ background-color: {BG_COLOR}; }}
     
     .block-container {{
-        max-width: 100% !important; 
-        padding: 0 10px !important;
+        max-width: 800px !important; 
+        padding: 0 !important;
     }}
 
     .header-section {{
@@ -44,34 +44,17 @@ st.markdown(f"""
         text-align: center !important;
     }}
 
-    /* --- IPHONE NAVIGATION BAR FIX --- */
-    .custom-nav-bar {{
+    /* --- KLJUČ ZA SREDINSKO PORAVNAVO --- */
+    /* To poskrbi, da so vsi gumbi v kategorijah in v igri točno na sredini */
+    [data-testid="stVerticalBlock"] > div {{
         display: flex !important;
-        flex-direction: row !important;
-        justify-content: center !important;
+        flex-direction: column !important;
         align-items: center !important;
-        gap: 20px !important;
+        justify-content: center !important;
         width: 100% !important;
-        margin: 20px 0 !important;
     }}
 
-    .nav-icon-btn {{
-        background-color: {BTN_COLOR} !important;
-        color: {TEXT_COLOR} !important;
-        border-radius: 50% !important; /* Okrogli gumbi za ikone */
-        width: 60px !important;
-        height: 60px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        font-size: 28px !important;
-        text-decoration: none !important;
-        box-shadow: 2px 4px 8px rgba(0,0,0,0.1) !important;
-        border: none !important;
-        cursor: pointer !important;
-    }}
-
-    /* SPLOŠNI GUMBI (Meni, Kategorije) */
+    /* STIL ZA GUMBE */
     div.stButton > button {{
         background-color: {BTN_COLOR} !important;
         color: {TEXT_COLOR} !important;
@@ -79,9 +62,37 @@ st.markdown(f"""
         border: none !important;
         width: 100% !important;
         max-width: 280px !important; 
-        font-size: 20px !important;
+        font-size: 22px !important;
         padding: 10px !important;
-        margin: 5px auto !important;
+        margin: 5px auto !important; /* To centrirani gumbe navzven */
+        box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
+        font-family: 'Patrick Hand', cursive !important;
+    }}
+
+    /* ANIMACIJA LETEČIH SRČKOV */
+    @keyframes hearts-fly {{
+        0% {{ bottom: -50px; opacity: 1; }}
+        100% {{ bottom: 110vh; opacity: 0; }}
+    }}
+
+    .heart-particle {{
+        position: fixed;
+        left: 50%;
+        color: #ff4b4b;
+        font-size: 35px;
+        user-select: none;
+        pointer-events: none;
+        z-index: 99999 !important;
+        animation: hearts-fly 4s linear forwards;
+    }}
+
+    /* VRSTICA ZA IGRO - Prilagojena za stabilnost */
+    .game-mode [data-testid="stHorizontalBlock"] {{
+        width: 100% !important;
+        max-width: 500px !important;
+        margin: 0 auto !important;
+        display: flex !important;
+        justify-content: center !important;
     }}
 
     .q-card {{
@@ -89,8 +100,10 @@ st.markdown(f"""
         padding: 30px;
         border-radius: 30px;
         border: 2px solid {BTN_COLOR};
+        text-align: center;
         margin: 15px auto;
         min-height: 200px;
+        max-width: 500px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -102,11 +115,11 @@ st.markdown(f"""
 
 def trigger_custom_hearts():
     heart_html = ""
-    for i in range(25):
-        left = random.randint(5, 95)
-        delay = random.uniform(0, 2)
-        heart_html += f'<div style="position:fixed; left:{left}%; bottom:-50px; color:#ff4b4b; font-size:30px; z-index:9999; animation: fly 4s {delay}s linear forwards;">❤️</div>'
-    st.markdown(heart_html + "<style>@keyframes fly {0%{bottom:-50px; opacity:1;} 100%{bottom:110vh; opacity:0;}}</style>", unsafe_allow_html=True)
+    for i in range(20):
+        left = random.randint(0, 100)
+        delay = random.uniform(0, 3)
+        heart_html += f'<div class="heart-particle" style="left: {left}%; animation-delay: {delay}s;">❤️</div>'
+    st.markdown(heart_html, unsafe_allow_html=True)
 
 # --- LOGIKA PODATKOV ---
 FAVORITES_FILE = "favorites.txt"
@@ -149,13 +162,15 @@ def toggle_fav(q):
 # --- STRANI ---
 
 if st.session_state.page == "main":
-    st.markdown(f'<div class="header-section"><h1 style="font-size: 42px; margin: 0;">ČAS ZA POGOVOR</h1><p style="font-size: 18px; margin-top: 5px; opacity: 0.8;">✨ Za povezanost ✨</p></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="header-section"><h1 style="font-size: 42px; margin: 0;">ČAS ZA POGOVOR</h1><p style="font-size: 18px; margin-top: 5px; opacity: 0.8;">✨ Za povezanost na globlji ravni ✨</p></div>', unsafe_allow_html=True)
     st.markdown(f"<h2 style='font-size: 32px; margin-bottom: 20px;'>IZBERI KATEGORIJO:</h2>", unsafe_allow_html=True)
+    
     for cat in sorted(questions.keys()):
         if st.button(cat.upper()):
             st.session_state.category = cat
             st.session_state.page = "count_selection"
             st.rerun()
+            
     if st.session_state.favorites:
         st.write("---")
         if st.button("❤️ PRILJUBLJENE"):
@@ -177,7 +192,7 @@ elif st.session_state.page == "count_selection":
             st.session_state.index = 0
             st.session_state.page = "game"
             st.rerun()
-    st.write("---")
+    st.write("")
     if st.button("🏠 NAZAJ"):
         st.session_state.page = "main"
         st.rerun()
@@ -188,44 +203,27 @@ elif st.session_state.page == "game":
     if st.session_state.index < len(st.session_state.deck):
         current_q = st.session_state.deck[st.session_state.index]
         st.write(f"Kartica {st.session_state.index + 1} od {len(st.session_state.deck)}")
-        st.markdown(f'<div class="q-card"><p style="font-size: 24px; font-weight: bold;">{current_q}</p></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="q-card"><p style="font-size: 26px; font-weight: bold;">{current_q}</p></div>', unsafe_allow_html=True)
         
-        # --- DOKONČNA REŠITEV ZA VRSTICO (BREZ st.columns) ---
-        # Ustvarimo tri stolpce, a jih prisilimo v vrstico z novim CSS razredom
-        c1, c2, c3 = st.columns([1, 1, 1])
-        
-        # Na iPhonu st.columns včasih še vedno prelamlja, zato uporabiva tole:
+        # VRSTA GUMBOV
+        st.markdown('<div class="game-mode">', unsafe_allow_html=True)
+        c1, c2, c3 = st.columns([1, 0.8, 1.2])
         with c1:
-            if st.button("⬅️", key="prev"):
+            if st.button("<"):
                 if st.session_state.index > 0:
                     st.session_state.index -= 1
                     st.rerun()
         with c2:
             is_f = current_q in st.session_state.favorites
-            if st.button("❤️" if is_f else "🤍", key="fav"):
+            heart_icon = "❤️" if is_f else "🤍"
+            if st.button(heart_icon):
                 toggle_fav(current_q)
                 st.rerun()
         with c3:
-            if st.button("➡️", key="next"):
+            if st.button("NAPREJ"):
                 st.session_state.index += 1
                 st.rerun()
-
-        # Prisilimo te tri gumbe v vrsto z uporabo CSS selektorja za točno to vrstico
-        st.markdown("""
-            <style>
-            [data-testid="stHorizontalBlock"] {
-                flex-direction: row !important;
-                display: flex !important;
-                flex-wrap: nowrap !important;
-                justify-content: center !important;
-            }
-            [data-testid="column"] {
-                width: 30% !important;
-                flex: 1 1 30% !important;
-                min-width: 0 !important;
-            }
-            </style>
-            """, unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
         st.write("---")
         if st.button("🏠 MENI"):
@@ -234,7 +232,7 @@ elif st.session_state.page == "game":
             
     else:
         trigger_custom_hearts()
-        st.markdown("<h2 style='margin-top: 30px;'>Konec! ❤️</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='margin-top: 30px;'>Prišla sta do konca! ❤️</h2>", unsafe_allow_html=True)
         if st.button("Domov"):
             st.session_state.page = "main"
             st.rerun()
