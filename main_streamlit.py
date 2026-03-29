@@ -20,6 +20,7 @@ st.markdown(f"""
     .stApp {{ background-color: {BG_COLOR}; }}
     .block-container {{ max-width: 100% !important; padding: 0 !important; }}
 
+    /* HEADER */
     .header-section {{
         background-color: #ffffff;
         padding: 30px 20px;
@@ -34,34 +35,32 @@ st.markdown(f"""
         text-align: center;
     }}
 
-    /* --- MAGIČNO CENTRIRANJE ZA MENI --- */
-    .centered-container [data-testid="stVerticalBlock"] > div {{
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: 100% !important;
-    }}
-
     /* STIL ZA GUMBE */
     div.stButton > button {{
         background-color: {BTN_COLOR} !important;
         color: {TEXT_COLOR} !important;
         border-radius: 25px !important;
         border: none !important;
-        width: 100% !important;
         font-family: 'Patrick Hand', cursive !important;
+        box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
         font-size: 22px !important;
         padding: 10px !important;
-        box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
+        width: 100% !important;
     }}
 
-    /* Omejitev širine gumbov v meniju, da niso čez cel ekran na računalniku */
-    .centered-container div.stButton > button {{
-        max-width: 300px !important;
+    /* CENTRIRANJE SAMO ZA MENI (Strani 1 in 2) */
+    .centered-menu [data-testid="stVerticalBlock"] > div {{
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }}
+
+    .centered-menu div.stButton > button {{
+        max-width: 280px !important; /* Da niso predolgi */
         margin: 5px auto !important;
     }}
 
+    /* KARTICA */
     .q-card {{
         background-color: {CARD_COLOR};
         padding: 30px;
@@ -124,8 +123,8 @@ def toggle_fav(q):
 if st.session_state.page == "main":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 42px;">ČAS ZA POGOVOR</h1><p>✨ Za povezanost ✨</p></div>', unsafe_allow_html=True)
     
-    # Tukaj uporabiva centered-container
-    st.markdown('<div class="centered-container">', unsafe_allow_html=True)
+    # Uporabiva centered-menu div
+    st.markdown('<div class="centered-menu">', unsafe_allow_html=True)
     st.markdown(f"<h2 style='font-size: 32px; margin-bottom: 20px;'>KATEGORIJA:</h2>", unsafe_allow_html=True)
     
     for cat in sorted(questions.keys()):
@@ -145,12 +144,11 @@ if st.session_state.page == "main":
             st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
 
-# STRAN 2: IZBIRA ŠTEVILA KARTIC
+# STRAN 2: IZBIRA ŠTEVILA
 elif st.session_state.page == "count_selection":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 38px;">{st.session_state.category}</h1></div>', unsafe_allow_html=True)
     
-    # Tudi tukaj uporabiva centered-container
-    st.markdown('<div class="centered-container">', unsafe_allow_html=True)
+    st.markdown('<div class="centered-menu">', unsafe_allow_html=True)
     st.markdown('<p style="font-size: 22px; margin-top: 10px;">Koliko kartic?</p>', unsafe_allow_html=True)
     for opt in [5, 10, "Vse"]:
         if st.button(f"Igraj {opt}"):
@@ -160,21 +158,21 @@ elif st.session_state.page == "count_selection":
             st.session_state.index = 0
             st.session_state.page = "game"
             st.rerun()
-    
     if st.button("< Nazaj"):
         st.session_state.page = "main"
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
 
-# STRAN 3: IGRA
+# STRAN 3: IGRA (Tukaj ne sme biti 'centered-menu' div-a!)
 elif st.session_state.page == "game":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 34px;">{st.session_state.category}</h1></div>', unsafe_allow_html=True)
+    
     if st.session_state.index < len(st.session_state.deck):
         current_q = st.session_state.deck[st.session_state.index]
         st.write(f"Kartica {st.session_state.index + 1} od {len(st.session_state.deck)}")
         st.markdown(f'<div class="q-card"><p style="font-size: 26px; font-weight: bold;">{current_q}</p></div>', unsafe_allow_html=True)
         
-        # TUKAJ NE UPORABIVA centered-container, da stolpci delujejo vodoravno
+        # GUMBI V VRSTI - Tukaj stolpci delujejo, ker ni centered-menu diva
         c1, c2, c3, c4 = st.columns([1, 1.1, 0.7, 1.3])
         with c1:
             if st.button("<"):
@@ -197,8 +195,7 @@ elif st.session_state.page == "game":
     else:
         st.balloons()
         st.markdown("<h2 style='margin-top: 30px;'>Konec! ❤️</h2>", unsafe_allow_html=True)
-        # Za konec lahko spet centriramo
-        st.markdown('<div class="centered-container">', unsafe_allow_html=True)
+        st.markdown('<div class="centered-menu">', unsafe_allow_html=True)
         if st.button("Domov"):
             st.session_state.page = "main"
             st.rerun()
