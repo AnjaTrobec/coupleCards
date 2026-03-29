@@ -12,7 +12,7 @@ CARD_COLOR = "#fff2f5"
 BTN_COLOR = "#f2bfc9"     
 TEXT_COLOR = "#993366"    
 
-# 3. CSS STIL - FIKSEN ZA IPHONE (BREZ SCROLLANJA)
+# 3. CSS STIL - TOTALNI FIX ZA VODORAVNE IKONE NA IPHONU
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
@@ -21,8 +21,7 @@ st.markdown(f"""
     
     .block-container {{
         max-width: 100% !important; 
-        padding-left: 10px !important;
-        padding-right: 10px !important;
+        padding: 0 10px !important;
     }}
 
     .header-section {{
@@ -45,47 +44,49 @@ st.markdown(f"""
         text-align: center !important;
     }}
 
-    /* --- IPHONE VRSTICA GUMBOV (BREZ PRELOMA) --- */
-    .game-mode [data-testid="stHorizontalBlock"] {{
+    /* --- MAGIČNI FIX ZA VRSTICO --- */
+    /* Prisilimo vse elemente znotraj enega vertical blocka v vrstico */
+    .iphone-row [data-testid="stVerticalBlock"] {{
         display: flex !important;
         flex-direction: row !important;
         flex-wrap: nowrap !important;
         justify-content: center !important;
         align-items: center !important;
-        gap: 10px !important;
+        gap: 15px !important;
         width: 100% !important;
     }}
 
-    .game-mode [data-testid="column"] {{
+    .iphone-row div.stButton {{
+        width: auto !important;
         flex: 1 !important;
-        min-width: 0 !important;
     }}
 
-    .game-mode div.stButton > button {{
-        width: 100% !important;
-        font-size: 24px !important; /* Večje ikone */
-        padding: 5px !important;
-        min-height: 50px !important;
-    }}
-
-    /* SPLOŠNI GUMBI (Meni, Kategorije) */
     div.stButton > button {{
         background-color: {BTN_COLOR} !important;
         color: {TEXT_COLOR} !important;
         border-radius: 25px !important;
         border: none !important;
+        width: 100% !important;
         max-width: 280px !important; 
-        font-size: 20px;
+        font-size: 22px !important;
+        padding: 10px !important;
         box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
+    }}
+
+    /* Posebej za ikone v igri */
+    .iphone-row div.stButton > button {{
+        font-size: 28px !important;
+        padding: 5px !important;
+        min-width: 70px !important;
     }}
 
     .q-card {{
         background-color: {CARD_COLOR};
-        padding: 25px;
+        padding: 30px;
         border-radius: 30px;
         border: 2px solid {BTN_COLOR};
         margin: 15px auto;
-        min-height: 180px;
+        min-height: 200px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -95,14 +96,13 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# Funkcija za srčke
 def trigger_custom_hearts():
     heart_html = ""
-    for i in range(20):
-        left = random.randint(0, 100)
+    for i in range(25):
+        left = random.randint(5, 95)
         delay = random.uniform(0, 2)
-        heart_html += f'<div class="heart-particle" style="position:fixed; left:{left}%; bottom:-50px; color:#ff4b4b; font-size:30px; animation: hearts-fly 4s {delay}s linear forwards;">❤️</div>'
-    st.markdown(heart_html + """<style>@keyframes hearts-fly {0%{bottom:-50px; opacity:1;} 100%{bottom:110vh; opacity:0;}}</style>""", unsafe_allow_html=True)
+        heart_html += f'<div style="position:fixed; left:{left}%; bottom:-50px; color:#ff4b4b; font-size:30px; z-index:9999; animation: fly 4s {delay}s linear forwards;">❤️</div>'
+    st.markdown(heart_html + "<style>@keyframes fly {0%{bottom:-50px; opacity:1;} 100%{bottom:110vh; opacity:0;}}</style>", unsafe_allow_html=True)
 
 # --- LOGIKA PODATKOV ---
 FAVORITES_FILE = "favorites.txt"
@@ -147,13 +147,11 @@ def toggle_fav(q):
 if st.session_state.page == "main":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 42px; margin: 0;">ČAS ZA POGOVOR</h1><p style="font-size: 18px; margin-top: 5px; opacity: 0.8;">✨ Za povezanost ✨</p></div>', unsafe_allow_html=True)
     st.markdown(f"<h2 style='font-size: 32px; margin-bottom: 20px;'>IZBERI KATEGORIJO:</h2>", unsafe_allow_html=True)
-    
     for cat in sorted(questions.keys()):
         if st.button(cat.upper()):
             st.session_state.category = cat
             st.session_state.page = "count_selection"
             st.rerun()
-            
     if st.session_state.favorites:
         st.write("---")
         if st.button("❤️ PRILJUBLJENE"):
@@ -188,22 +186,24 @@ elif st.session_state.page == "game":
         st.write(f"Kartica {st.session_state.index + 1} od {len(st.session_state.deck)}")
         st.markdown(f'<div class="q-card"><p style="font-size: 24px; font-weight: bold;">{current_q}</p></div>', unsafe_allow_html=True)
         
-        # VRSTA GUMBOV - UPORABLJAMO SAMO IKONE ZA MAKSIMALEN PROSTOR
-        st.markdown('<div class="game-mode">', unsafe_allow_html=True)
-        c1, c2, c3 = st.columns([1, 1, 1])
-        with c1:
-            if st.button("⬅️"):
-                if st.session_state.index > 0:
-                    st.session_state.index -= 1
-                    st.rerun()
-        with c2:
+        # --- NOVI PRISTOP: BREZ STOLPCEV ---
+        # Vse gumbe damo v en kontejner, CSS jih bo prisilil v vrstico
+        st.markdown('<div class="iphone-row">', unsafe_allow_html=True)
+        col_container = st.container()
+        with col_container:
+            btn_prev = st.button("⬅️")
             is_f = current_q in st.session_state.favorites
-            heart_icon = "❤️" if is_f else "🤍"
-            if st.button(heart_icon):
+            btn_fav = st.button("❤️" if is_f else "🤍")
+            btn_next = st.button("➡️")
+            
+            # Logika gumbov
+            if btn_prev and st.session_state.index > 0:
+                st.session_state.index -= 1
+                st.rerun()
+            if btn_fav:
                 toggle_fav(current_q)
                 st.rerun()
-        with c3:
-            if st.button("➡️"):
+            if btn_next:
                 st.session_state.index += 1
                 st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
