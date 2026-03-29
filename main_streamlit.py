@@ -34,6 +34,15 @@ st.markdown(f"""
         text-align: center;
     }}
 
+    /* --- MAGIČNO CENTRIRANJE ZA MENI --- */
+    .centered-container [data-testid="stVerticalBlock"] > div {{
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+    }}
+
     /* STIL ZA GUMBE */
     div.stButton > button {{
         background-color: {BTN_COLOR} !important;
@@ -45,6 +54,12 @@ st.markdown(f"""
         font-size: 22px !important;
         padding: 10px !important;
         box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
+    }}
+
+    /* Omejitev širine gumbov v meniju, da niso čez cel ekran na računalniku */
+    .centered-container div.stButton > button {{
+        max-width: 300px !important;
+        margin: 5px auto !important;
     }}
 
     .q-card {{
@@ -105,50 +120,53 @@ def toggle_fav(q):
 
 # --- STRANI ---
 
+# STRAN 1: GLAVNI MENI
 if st.session_state.page == "main":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 42px;">ČAS ZA POGOVOR</h1><p>✨ Za povezanost ✨</p></div>', unsafe_allow_html=True)
+    
+    # Tukaj uporabiva centered-container
+    st.markdown('<div class="centered-container">', unsafe_allow_html=True)
     st.markdown(f"<h2 style='font-size: 32px; margin-bottom: 20px;'>KATEGORIJA:</h2>", unsafe_allow_html=True)
     
     for cat in sorted(questions.keys()):
-        l, m, r = st.columns([0.2, 0.6, 0.2])
-        with m:
-            if st.button(cat.upper()):
-                st.session_state.category = cat
-                st.session_state.page = "count_selection"
-                st.rerun()
+        if st.button(cat.upper()):
+            st.session_state.category = cat
+            st.session_state.page = "count_selection"
+            st.rerun()
             
     if st.session_state.favorites:
         st.write("---")
-        l, m, r = st.columns([0.2, 0.6, 0.2])
-        with m:
-            if st.button("⭐ PRILJUBLJENE"):
-                st.session_state.category = "PRILJUBLJENE"
-                st.session_state.deck = st.session_state.favorites.copy()
-                random.shuffle(st.session_state.deck)
-                st.session_state.index = 0
-                st.session_state.page = "game"
-                st.rerun()
+        if st.button("⭐ PRILJUBLJENE"):
+            st.session_state.category = "PRILJUBLJENE"
+            st.session_state.deck = st.session_state.favorites.copy()
+            random.shuffle(st.session_state.deck)
+            st.session_state.index = 0
+            st.session_state.page = "game"
+            st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
 
+# STRAN 2: IZBIRA ŠTEVILA KARTIC
 elif st.session_state.page == "count_selection":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 38px;">{st.session_state.category}</h1></div>', unsafe_allow_html=True)
+    
+    # Tudi tukaj uporabiva centered-container
+    st.markdown('<div class="centered-container">', unsafe_allow_html=True)
     st.markdown('<p style="font-size: 22px; margin-top: 10px;">Koliko kartic?</p>', unsafe_allow_html=True)
     for opt in [5, 10, "Vse"]:
-        l, m, r = st.columns([0.2, 0.6, 0.2])
-        with m:
-            if st.button(f"Igraj {opt}"):
-                q_list = questions[st.session_state.category]
-                n = len(q_list) if opt == "Vse" else opt
-                st.session_state.deck = random.sample(q_list, min(n, len(q_list)))
-                st.session_state.index = 0
-                st.session_state.page = "game"
-                st.rerun()
-    
-    l, m, r = st.columns([0.2, 0.6, 0.2])
-    with m:
-        if st.button("< Nazaj"):
-            st.session_state.page = "main"
+        if st.button(f"Igraj {opt}"):
+            q_list = questions[st.session_state.category]
+            n = len(q_list) if opt == "Vse" else opt
+            st.session_state.deck = random.sample(q_list, min(n, len(q_list)))
+            st.session_state.index = 0
+            st.session_state.page = "game"
             st.rerun()
+    
+    if st.button("< Nazaj"):
+        st.session_state.page = "main"
+        st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
 
+# STRAN 3: IGRA
 elif st.session_state.page == "game":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 34px;">{st.session_state.category}</h1></div>', unsafe_allow_html=True)
     if st.session_state.index < len(st.session_state.deck):
@@ -156,6 +174,7 @@ elif st.session_state.page == "game":
         st.write(f"Kartica {st.session_state.index + 1} od {len(st.session_state.deck)}")
         st.markdown(f'<div class="q-card"><p style="font-size: 26px; font-weight: bold;">{current_q}</p></div>', unsafe_allow_html=True)
         
+        # TUKAJ NE UPORABIVA centered-container, da stolpci delujejo vodoravno
         c1, c2, c3, c4 = st.columns([1, 1.1, 0.7, 1.3])
         with c1:
             if st.button("<"):
@@ -178,8 +197,9 @@ elif st.session_state.page == "game":
     else:
         st.balloons()
         st.markdown("<h2 style='margin-top: 30px;'>Konec! ❤️</h2>", unsafe_allow_html=True)
-        l, m, r = st.columns([0.2, 0.6, 0.2])
-        with m:
-            if st.button("Domov"):
-                st.session_state.page = "main"
-                st.rerun()
+        # Za konec lahko spet centriramo
+        st.markdown('<div class="centered-container">', unsafe_allow_html=True)
+        if st.button("Domov"):
+            st.session_state.page = "main"
+            st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
