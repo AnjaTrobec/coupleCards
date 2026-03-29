@@ -12,7 +12,7 @@ CARD_COLOR = "#fff2f5"
 BTN_COLOR = "#f2bfc9"     
 TEXT_COLOR = "#993366"    
 
-# 3. OSVEŽEN CSS - STABILNO CENTRIRANJE + MAJHNA IKONA
+# 3. CSS STIL
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
@@ -24,7 +24,6 @@ st.markdown(f"""
         padding: 0 !important;
     }}
 
-    /* HEADER - Raztegnjen čez celo širino */
     .header-section {{
         background-color: #ffffff;
         padding: 30px 0 25px 0;
@@ -39,7 +38,6 @@ st.markdown(f"""
         margin-bottom: 30px;
     }}
 
-    /* MAJHNA IKONA SRČKA */
     .top-icon-container img {{
         max-width: 50px !important;
         margin: 0 auto 10px auto !important;
@@ -52,7 +50,6 @@ st.markdown(f"""
         text-align: center !important;
     }}
 
-    /* ZMAGOVALNO CENTRIRANJE IZ PREDZADNJE VERZIJE */
     [data-testid="stVerticalBlock"] > div {{
         display: flex !important;
         flex-direction: column !important;
@@ -61,6 +58,7 @@ st.markdown(f"""
         width: 100% !important;
     }}
 
+    /* STIL ZA GUMBE */
     div.stButton > button {{
         background-color: {BTN_COLOR} !important;
         color: {TEXT_COLOR} !important;
@@ -74,7 +72,14 @@ st.markdown(f"""
         box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
     }}
 
-    /* ANIMACIJA LETEČIH SRČKOV */
+    /* POSEBEN MANJŠI STIL ZA GUMB MENI ZGORAJ */
+    .menu-btn-top div.stButton > button {{
+        max-width: 120px !important;
+        font-size: 16px !important;
+        padding: 5px !important;
+        margin-top: 10px !important;
+    }}
+
     @keyframes hearts-fly {{
         0% {{ transform: translateY(0); opacity: 0; }}
         5% {{ opacity: 1; }}
@@ -117,7 +122,6 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# Funkcija za srčke
 def trigger_custom_hearts():
     heart_html = ""
     for i in range(25):
@@ -126,7 +130,7 @@ def trigger_custom_hearts():
         heart_html += f'<div class="heart-particle" style="left: {left_pos}%; animation-delay: {delay}s;">❤️</div>'
     st.markdown(heart_html, unsafe_allow_html=True)
 
-# --- LOGIKA PODATKOV ---
+# 4. LOGIKA PODATKOV
 FAVORITES_FILE = "favorites.txt"
 def load_data():
     try:
@@ -167,20 +171,15 @@ def toggle_fav(q):
 # --- STRANI ---
 
 if st.session_state.page == "main":
-    # HEADER SECTION
     st.markdown('<div class="header-section">', unsafe_allow_html=True)
-    
-    # Ikona srčka (v belem delu)
     if os.path.exists("heart.png"):
         st.markdown('<div class="top-icon-container">', unsafe_allow_html=True)
         st.image("heart.png", width=50)
         st.markdown('</div>', unsafe_allow_html=True)
-    
     st.markdown(f'<h1 style="font-size: 42px; margin: 0;">ČAS ZA NAJU</h1><p style="font-size: 18px; margin-top: 5px; opacity: 0.8;">✨ Pogovor, ki povezuje ✨</p>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
     
     st.markdown(f"<h2 style='font-size: 32px; margin-bottom: 20px;'>IZBERI KATEGORIJO:</h2>", unsafe_allow_html=True)
-    
     for cat in sorted(questions.keys()):
         if st.button(cat.upper()):
             st.session_state.category = cat
@@ -213,30 +212,34 @@ elif st.session_state.page == "count_selection":
         st.rerun()
 
 elif st.session_state.page == "game":
-    st.markdown(f'<div class="header-section"><h1 style="font-size: 34px; margin: 0;">{st.session_state.category}</h1></div>', unsafe_allow_html=True)
+    # HEADER Z GUMBOM ZA MENI
+    st.markdown(f'<div class="header-section"><h1 style="font-size: 34px; margin: 0;">{st.session_state.category}</h1>', unsafe_allow_html=True)
+    st.markdown('<div class="menu-btn-top">', unsafe_allow_html=True)
+    if st.button("Meni"):
+        st.session_state.page = "main"
+        st.rerun()
+    st.markdown('</div></div>', unsafe_allow_html=True)
+
     if st.session_state.index < len(st.session_state.deck):
         current_q = st.session_state.deck[st.session_state.index]
         st.write(f"Kartica {st.session_state.index + 1} od {len(st.session_state.deck)}")
         st.markdown(f'<div class="q-card"><p style="font-size: 26px; font-weight: bold;">{current_q}</p></div>', unsafe_allow_html=True)
         
+        # TRIJE GUMBI SPODAJ (Večji in bolj čisti)
         st.markdown('<div class="game-mode">', unsafe_allow_html=True)
-        c1, c2, c3, c4 = st.columns([1, 1, 0.7, 1.2])
+        c1, c2, c3 = st.columns([1, 0.8, 1.2])
         with c1:
             if st.button("<"):
                 if st.session_state.index > 0:
                     st.session_state.index -= 1
                     st.rerun()
         with c2:
-            if st.button("Meni"):
-                st.session_state.page = "main"
-                st.rerun()
-        with c3:
             is_f = current_q in st.session_state.favorites
             heart_icon = "❤️" if is_f else "🤍"
             if st.button(heart_icon):
                 toggle_fav(current_q)
                 st.rerun()
-        with c4:
+        with c3:
             if st.button("Naprej"):
                 st.session_state.index += 1
                 st.rerun()
