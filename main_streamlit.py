@@ -3,8 +3,8 @@ import pandas as pd
 import random
 import os
 
-# 1. KONFIGURACIJA STRANI
-st.set_page_config(page_title="Najina Pot", page_icon="❤️", layout="wide")
+# 1. KONFIGURACIJA STRANI (Layout 'centered' je bolj stabilen za centriranje)
+st.set_page_config(page_title="Najina Pot", page_icon="❤️", layout="centered")
 
 # 2. DEFINICIJA BARV
 BG_COLOR = "#f5f2ee"      
@@ -12,20 +12,27 @@ CARD_COLOR = "#fff2f5"
 BTN_COLOR = "#f2bfc9"     
 TEXT_COLOR = "#993366"    
 
-# 3. CELOTEN CSS STIL (Vključno z lastno animacijo srčkov)
+# 3. ZMAGOVALNI CSS STIL (Fokus na centriranje in animacijo)
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
 
     .stApp {{ background-color: {BG_COLOR}; }}
-    .block-container {{ max-width: 100% !important; padding: 0 !important; }}
+    
+    /*Header naj bo čez celo širino */
+    .block-container {{
+        max-width: 100% !important;
+        padding: 0 !important;
+    }}
 
+    /* HEADER - Bel do črte */
     .header-section {{
         background-color: #ffffff;
         padding: 40px 20px 30px 20px;
         text-align: center;
+        width: 100%;
         border-bottom: 3px solid {BTN_COLOR};
-        margin-bottom: 20px;
+        margin-bottom: 30px;
     }}
 
     html, body, [class*="css"], .stMarkdown, p, h1, h2, h3 {{
@@ -34,38 +41,29 @@ st.markdown(f"""
         text-align: center !important;
     }}
 
+    /* --- KLJUČ ZA CENTRIRANJE KATEGORIJ NA IPHONU --- */
+    /* To je tista magična formula, ki nama je prej delovala */
+    [data-testid="stVerticalBlock"] > div {{
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+    }}
+
+    /* STIL ZA GUMBE */
     div.stButton > button {{
         background-color: {BTN_COLOR} !important;
         color: {TEXT_COLOR} !important;
         border-radius: 25px !important;
         border: none !important;
         width: 100% !important;
-        max-width: 280px !important;
+        max-width: 280px !important; /* Omejitev širine za telefon */
         font-size: 22px !important;
-        padding: 12px !important;
+        padding: 10px !important;
+        margin: 5px auto !important; /* To centrirani gumb */
         box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
-        margin: 5px auto !important;
-    }}
-
-    .game-mode [data-testid="stHorizontalBlock"] {{
-        flex-direction: row !important;
-        align-items: stretch !important;
-        width: 100% !important;
-        max-width: 600px !important;
-    }}
-
-    .q-card {{
-        background-color: {CARD_COLOR};
-        padding: 30px;
-        border-radius: 30px;
-        border: 2px solid {BTN_COLOR};
-        text-align: center;
-        margin: 15px auto;
-        min-height: 200px;
-        max-width: 500px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        font-family: 'Patrick Hand', cursive !important;
     }}
 
     /* --- ANIMACIJA LETEČIH SRČKOV --- */
@@ -85,14 +83,29 @@ st.markdown(f"""
         animation: hearts-fly 4s linear forwards;
     }}
 
+    /* KARTICA */
+    .q-card {{
+        background-color: {CARD_COLOR};
+        padding: 30px;
+        border-radius: 30px;
+        border: 2px solid {BTN_COLOR};
+        text-align: center;
+        margin: 20px auto;
+        min-height: 200px;
+        max-width: 500px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }}
+
     #MainMenu, footer, header {{visibility: hidden;}}
     </style>
     """, unsafe_allow_html=True)
 
-# Funkcija za sprožitev srčkov (HTML verzija)
+# Funkcija za srčke (HTML/CSS)
 def trigger_custom_hearts():
     heart_html = ""
-    for i in range(25): # Število srčkov
+    for i in range(20): # Število srčkov
         left = random.randint(0, 100)
         delay = random.uniform(0, 3)
         heart_html += f'<div class="heart-particle" style="left: {left}%; animation-delay: {delay}s;">❤️</div>'
@@ -138,40 +151,54 @@ def toggle_fav(q):
 
 # --- STRANI ---
 
+# STRAN 1: GLAVNI MENI
 if st.session_state.page == "main":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 42px;">ČAS ZA POGOVOR</h1><p>✨ Za povezanost ✨</p></div>', unsafe_allow_html=True)
-    st.markdown(f"<h2 style='font-size: 32px; margin-top: 10px;'>KATEGORIJA:</h2>", unsafe_allow_html=True)
+    st.markdown(f"<h2 style='font-size: 32px; margin-bottom: 20px;'>IZBERI KATEGORIJO:</h2>", unsafe_allow_html=True)
+    
     for cat in sorted(questions.keys()):
-        if st.button(cat.upper()):
-            st.session_state.category = cat
-            st.session_state.page = "count_selection"
-            st.rerun()
+        # Centriranje gumbov preko stolpcev [1, 2, 1] (Safari to razume)
+        c1, c2, c3 = st.columns([1, 2, 1])
+        with c2:
+            if st.button(cat.upper()):
+                st.session_state.category = cat
+                st.session_state.page = "count_selection"
+                st.rerun()
             
     if st.session_state.favorites:
         st.write("---")
-        if st.button("⭐ PRILJUBLJENE"):
-            st.session_state.category = "PRILJUBLJENE"
-            st.session_state.deck = st.session_state.favorites.copy()
-            random.shuffle(st.session_state.deck)
-            st.session_state.index = 0
-            st.session_state.page = "game"
-            st.rerun()
+        c1, c2, c3 = st.columns([1, 2, 1])
+        with c2:
+            if st.button("⭐ PRILJUBLJENE"):
+                st.session_state.category = "PRILJUBLJENE"
+                st.session_state.deck = st.session_state.favorites.copy()
+                random.shuffle(st.session_state.deck)
+                st.session_state.index = 0
+                st.session_state.page = "game"
+                st.rerun()
 
+# STRAN 2: IZBIRA ŠTEVILA KARTIC
 elif st.session_state.page == "count_selection":
     st.markdown(f'<div class="header-section"><h1>{st.session_state.category}</h1></div>', unsafe_allow_html=True)
-    st.markdown('<p style="font-size: 24px; margin-top: 10px;">Koliko kartic?</p>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size: 22px; margin-top: 20px;">Koliko kartic?</p>', unsafe_allow_html=True)
     for opt in [5, 10, "Vse"]:
-        if st.button(f"Igraj {opt}"):
-            q_list = questions[st.session_state.category]
-            n = len(q_list) if opt == "Vse" else opt
-            st.session_state.deck = random.sample(q_list, min(n, len(q_list)))
-            st.session_state.index = 0
-            st.session_state.page = "game"
+        c1, c2, c3 = st.columns([1, 2, 1])
+        with c2:
+            if st.button(f"Igraj {opt}"):
+                q_list = questions[st.session_state.category]
+                n = len(q_list) if opt == "Vse" else opt
+                st.session_state.deck = random.sample(q_list, min(n, len(q_list)))
+                st.session_state.index = 0
+                st.session_state.page = "game"
+                st.rerun()
+    
+    c1, c2, c3 = st.columns([1, 2, 1])
+    with c2:
+        if st.button("< Nazaj"):
+            st.session_state.page = "main"
             st.rerun()
-    if st.button("< Nazaj"):
-        st.session_state.page = "main"
-        st.rerun()
 
+# STRAN 3: IGRA
 elif st.session_state.page == "game":
     st.markdown(f'<div class="header-section"><h1>{st.session_state.category}</h1></div>', unsafe_allow_html=True)
     if st.session_state.index < len(st.session_state.deck):
@@ -179,31 +206,34 @@ elif st.session_state.page == "game":
         st.write(f"Kartica {st.session_state.index + 1} od {len(st.session_state.deck)}")
         st.markdown(f'<div class="q-card"><p style="font-size: 26px; font-weight: bold;">{current_q}</p></div>', unsafe_allow_html=True)
         
-        st.markdown('<div class="game-mode">', unsafe_allow_html=True)
-        c1, c2, c3, c4 = st.columns([1, 1, 0.7, 1.2])
-        with c1:
+        # Gumbi v igri (vodoravno)
+        st.markdown('</div><div class="game-controls">', unsafe_allow_html=True)
+        col1, col2, col3, col4 = st.columns([1, 1, 0.7, 1.2])
+        with col1:
             if st.button("<"):
                 if st.session_state.index > 0:
                     st.session_state.index -= 1
                     st.rerun()
-        with c2:
+        with col2:
             if st.button("Meni"):
                 st.session_state.page = "main"
                 st.rerun()
-        with c3:
+        with col3:
             is_f = current_q in st.session_state.favorites
             if st.button("⭐" if is_f else "☆"):
                 toggle_fav(current_q)
                 st.rerun()
-        with c4:
+        with col4:
             if st.button("Naprej"):
                 st.session_state.index += 1
                 st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
     else:
-        # TUKAJ SPROŽIVA NAJINE SRČKE
+        # SPROŽIVA SRČKE NAMESTO SNEŽINK
         trigger_custom_hearts()
         st.markdown("<h2 style='margin-top: 30px;'>Prišla sta do konca! ❤️</h2>", unsafe_allow_html=True)
-        if st.button("Domov"):
-            st.session_state.page = "main"
-            st.rerun()
+        c1, c2, c3 = st.columns([1, 2, 1])
+        with c2:
+            if st.button("Domov"):
+                st.session_state.page = "main"
+                st.rerun()
