@@ -12,7 +12,7 @@ CARD_COLOR = "#fff2f5"
 BTN_COLOR = "#f2bfc9"     
 TEXT_COLOR = "#993366"    
 
-# 3. CSS STIL - BRUTALNO CENTRIRANJE
+# 3. CSS STIL
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
@@ -32,10 +32,10 @@ st.markdown(f"""
     html, body, [class*="css"], .stMarkdown, p, h1, h2, h3 {{
         font-family: 'Patrick Hand', cursive !important;
         color: {TEXT_COLOR} !important;
-        text-align: center !important; /* Prisila vsega na sredino */
+        text-align: center !important;
     }}
 
-    /* CENTRIRANJE VSEH ELEMENTOV V GLAVNEM STOLPCU */
+    /* CENTRIRANJE VSEH ELEMENTOV */
     [data-testid="stVerticalBlock"] {{
         align-items: center !important;
         display: flex !important;
@@ -49,23 +49,19 @@ st.markdown(f"""
         border-radius: 25px !important;
         border: none !important;
         width: 100% !important;
-        max-width: 280px !important; /* Omejitev širine za telefon */
+        max-width: 280px !important;
         font-size: 22px !important;
         padding: 10px !important;
         box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
         margin: 5px auto !important;
     }}
 
-    /* IZJEMA ZA IGRO: Stolpci morajo biti vodoravni */
+    /* IZJEMA ZA IGRO: Stolpci vodoravno */
     .game-mode [data-testid="stHorizontalBlock"] {{
         flex-direction: row !important;
         align-items: stretch !important;
         width: 100% !important;
         max-width: 600px !important;
-    }}
-    
-    .game-mode [data-testid="column"] {{
-        text-align: center !important;
     }}
 
     .q-card {{
@@ -80,6 +76,15 @@ st.markdown(f"""
         display: flex;
         align-items: center;
         justify-content: center;
+    }}
+
+    /* MAGIČNI SRČKI NAMESTO SNEŽINK */
+    .stSnow i::before {{
+        content: "\\\\2764" !important;
+        font-style: normal !important;
+        font-size: 30px !important;
+        color: #ff4b4b !important;
+        display: inline-block !important;
     }}
 
     #MainMenu, footer, header {{visibility: hidden;}}
@@ -130,7 +135,6 @@ if st.session_state.page == "main":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 42px;">ČAS ZA POGOVOR</h1><p>✨ Za povezanost ✨</p></div>', unsafe_allow_html=True)
     st.markdown(f"<h2 style='font-size: 32px; margin-top: 10px;'>KATEGORIJA:</h2>", unsafe_allow_html=True)
     
-    # Brez stolpcev in divov, CSS zgoraj bo opravil vse
     for cat in sorted(questions.keys()):
         if st.button(cat.upper()):
             st.session_state.category = cat
@@ -169,7 +173,6 @@ elif st.session_state.page == "game":
         st.write(f"Kartica {st.session_state.index + 1} od {len(st.session_state.deck)}")
         st.markdown(f'<div class="q-card"><p style="font-size: 26px; font-weight: bold;">{current_q}</p></div>', unsafe_allow_html=True)
         
-        # DODAMO POSEBEN DIV ZA IGRO
         st.markdown('<div class="game-mode">', unsafe_allow_html=True)
         c1, c2, c3, c4 = st.columns([1, 1, 0.7, 1.2])
         with c1:
@@ -192,8 +195,8 @@ elif st.session_state.page == "game":
                 st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
     else:
-        st.balloons()
-        st.markdown("<h2>Konec! ❤️</h2>", unsafe_allow_html=True)
+        st.snow()  # Sproži srčke!
+        st.markdown("<h2 style='margin-top: 30px;'>Konec! ❤️</h2>", unsafe_allow_html=True)
         if st.button("Domov"):
             st.session_state.page = "main"
             st.rerun()
