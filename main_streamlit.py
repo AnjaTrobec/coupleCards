@@ -18,10 +18,8 @@ TEXT_COLOR = "#993366"    # (0.6, 0.2, 0.4)
 
 st.markdown(f"""
     <style>
-    /* Uvoz pisave */
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
 
-    /* Vse CSS oklepaje podvojimo {{ }}, spremenljivke pa pustimo v enojnih { } */
     .stApp {{ 
         background-color: {BG_COLOR}; 
     }}
