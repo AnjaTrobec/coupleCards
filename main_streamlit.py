@@ -3,7 +3,7 @@ import pandas as pd
 import random
 import os
 
-# 1. VARNA DEFINICIJA SRČKA (da ne moti f-stringa)
+# 1. VARNA DEFINICIJA SRČKA
 HEART_ICON = "❤️"
 
 # 2. KONFIGURACIJA STRANI
@@ -23,7 +23,6 @@ st.markdown(f"""
     .stApp {{ background-color: {BG_COLOR}; }}
     .block-container {{ max-width: 100% !important; padding: 0 !important; }}
 
-    /* HEADER */
     .header-section {{
         background-color: #ffffff;
         padding: 40px 20px 30px 20px;
@@ -38,7 +37,7 @@ st.markdown(f"""
         text-align: center !important;
     }}
 
-    /* CENTRIRANJE VSEH ELEMENTOV */
+    /* CENTRIRANJE */
     [data-testid="stVerticalBlock"] {{
         align-items: center !important;
         display: flex !important;
@@ -59,7 +58,6 @@ st.markdown(f"""
         margin: 5px auto !important;
     }}
 
-    /* IZJEMA ZA IGRO: Stolpci vodoravno */
     .game-mode [data-testid="stHorizontalBlock"] {{
         flex-direction: row !important;
         align-items: stretch !important;
@@ -81,18 +79,19 @@ st.markdown(f"""
         justify-content: center;
     }}
 
-    /* --- SRČKI NAMESTO SNEŽINK --- */
-    /* Najprej skrijemo originalne snežinke */
-    [data-testid="stSnow"] i {{
-        display: none !important;
+    /* --- BRUTALNA SPREMEMBA BALONOV V SRČKE --- */
+    /* Skrijemo vse balone */
+    [data-testid="stBalloon"] {{
+        background-image: none !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
     }}
-    
-    /* Vstavimo srček preko pseudo-elementa */
-    [data-testid="stSnow"] span::before {{
+
+    /* Namesto balona izrišemo srček */
+    [data-testid="stBalloon"]::after {{
         content: "{HEART_ICON}" !important;
-        font-style: normal !important;
-        font-size: 35px !important;
-        visibility: visible !important;
+        font-size: 40px !important;
+        display: block !important;
     }}
 
     #MainMenu, footer, header {{visibility: hidden;}}
@@ -203,7 +202,7 @@ elif st.session_state.page == "game":
                 st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
     else:
-        st.snow()  # Sproži efekt srčkov!
+        st.balloons()  # Zdaj sprožimo balone, CSS jih bo spremenil v srčke!
         st.markdown("<h2 style='margin-top: 30px;'>Prišla sta do konca! ❤️</h2>", unsafe_allow_html=True)
         if st.button("Domov"):
             st.session_state.page = "main"
