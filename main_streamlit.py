@@ -7,21 +7,17 @@ import os
 st.set_page_config(page_title="Najina Pot", page_icon="❤️")
 
 # Meta oznake za iPhone "App" način
-st.markdown("""
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    """, unsafe_allow_html=True)
-
-# --- BARVE ---
-BG_COLOR = "#f5f2ee"      # (0.96, 0.93, 0.90)
-CARD_COLOR = "#fff2f5"    # (1, 0.95, 0.96)
-BTN_COLOR = "#f2bfc9"     # (0.95, 0.75, 0.80)
-TEXT_COLOR = "#993366"    # (0.6, 0.2, 0.4)
-
-# --- CSS STIL (Patrick Hand font in poravnava) ---
+# --- CSS STIL (Popravek za polno širino in gumbe) ---
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+
+    /* Prisili Streamlit vsebino, da uporabi 100% širine */
+    .block-container {{
+        max-width: 100% !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }}
 
     .stApp {{ 
         background-color: {BG_COLOR}; 
@@ -33,6 +29,10 @@ st.markdown(f"""
     }}
 
     /* Gumbi čez celo vrstico */
+    .stButton {{
+        width: 100%;
+    }}
+
     .stButton>button {{
         background-color: {BTN_COLOR};
         color: {TEXT_COLOR};
@@ -40,12 +40,12 @@ st.markdown(f"""
         border: none;
         font-weight: bold;
         width: 100% !important;
-        min-width: 100%;
-        display: block;
-        margin: 10px 0;
+        min-width: 100% !important;
+        display: block !important;
+        margin: 10px 0 !important;
         font-family: 'Patrick Hand', cursive !important;
         font-size: 26px !important;
-        padding: 15px;
+        padding: 15px !important;
     }}
 
     /* Kartica z vprašanjem */
@@ -60,6 +60,7 @@ st.markdown(f"""
         display: flex;
         align-items: center;
         justify-content: center;
+        width: 100%;
     }}
 
     .q-text {{ 
