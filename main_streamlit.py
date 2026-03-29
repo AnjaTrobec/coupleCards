@@ -12,7 +12,7 @@ CARD_COLOR = "#fff2f5"
 BTN_COLOR = "#f2bfc9"     
 TEXT_COLOR = "#993366"    
 
-# 3. CSS STIL - POPRAVEK ZA PRILAGODLJIV BELI HEADER
+# 3. STABILEN CSS ZA IPHONE (Fiksna višina belega dela)
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
@@ -24,10 +24,10 @@ st.markdown(f"""
         padding: 0 !important;
     }}
 
-    /* HEADER - Raztegnjen čez robove in PRILAGODLJIV po višini */
+    /* HEADER - Fiksno belo polje, ki se razteza čez robove */
     .header-section {{
         background-color: #ffffff !important;
-        padding: 30px 20px 30px 20px !important;
+        padding: 30px 0 !important;
         text-align: center;
         width: 100vw;
         position: relative;
@@ -37,16 +37,13 @@ st.markdown(f"""
         margin-right: -50vw;
         border-bottom: 3px solid {BTN_COLOR};
         margin-bottom: 30px;
-        display: flex !important; /* Uporabimo flexbox za vertikalno zlaganje */
-        flex-direction: column !important;
-        align-items: center !important;
-        height: auto !important; /* Samodejna višina glede na vsebino */
-        min-height: 150px;
+        min-height: 180px; /* Dovolj visoko, da objame vse */
     }}
 
     .top-icon-container img {{
         max-width: 50px !important;
-        margin-bottom: 10px !important;
+        margin: 0 auto 10px auto !important;
+        display: block !important;
     }}
 
     html, body, [class*="css"], .stMarkdown, p, h1, h2, h3 {{
@@ -55,7 +52,7 @@ st.markdown(f"""
         text-align: center !important;
     }}
 
-    /* CENTRIRANJE */
+    /* CENTRIRANJE VSEGA POD HEADERJEM */
     [data-testid="stVerticalBlock"] > div {{
         display: flex !important;
         flex-direction: column !important;
@@ -64,7 +61,7 @@ st.markdown(f"""
         width: 100% !important;
     }}
 
-    /* STIL ZA GUMBE */
+    /* GUMBI */
     div.stButton > button {{
         background-color: {BTN_COLOR} !important;
         color: {TEXT_COLOR} !important;
@@ -78,13 +75,12 @@ st.markdown(f"""
         box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
     }}
 
-    /* GUMB MENI V HEADERJU (Diskretnejši) */
+    /* MANJŠI GUMB MENI V HEADERJU */
     .menu-btn-top div.stButton > button {{
-        max-width: 100px !important;
+        max-width: 110px !important;
         font-size: 16px !important;
         padding: 5px !important;
         margin-bottom: 15px !important;
-        background-color: {BTN_COLOR} !important;
     }}
 
     /* ANIMACIJA LETEČIH SRČKOV */
@@ -92,10 +88,8 @@ st.markdown(f"""
         0% {{ bottom: -50px; opacity: 1; }}
         100% {{ bottom: 110vh; opacity: 0; }}
     }}
-
     .heart-particle {{
         position: fixed;
-        left: 50%;
         color: #ff4b4b;
         font-size: 35px;
         pointer-events: none;
@@ -131,10 +125,10 @@ def trigger_custom_hearts():
     for i in range(25):
         left_pos = random.randint(5, 95)
         delay = random.uniform(0, 2)
-        heart_html += f'<div class="heart-particle" style="left: {{left_pos}}%; animation-delay: {{delay}}s;">❤️</div>'
+        heart_html += f'<div class="heart-particle" style="left: {left_pos}%; animation-delay: {delay}s;">❤️</div>'
     st.markdown(heart_html, unsafe_allow_html=True)
 
-# --- LOGIKA PODATKOV ---
+# 4. LOGIKA PODATKOV
 FAVORITES_FILE = "favorites.txt"
 def load_data():
     try:
@@ -177,7 +171,9 @@ def toggle_fav(q):
 if st.session_state.page == "main":
     st.markdown('<div class="header-section">', unsafe_allow_html=True)
     if os.path.exists("heart.png"):
+        st.markdown('<div class="top-icon-container">', unsafe_allow_html=True)
         st.image("heart.png", width=50)
+        st.markdown('</div>', unsafe_allow_html=True)
     st.markdown(f'<h1 style="font-size: 42px; margin: 0;">ČAS ZA NAJU</h1><p style="font-size: 18px; margin-top: 5px; opacity: 0.8;">✨ Pogovor, ki povezuje ✨</p></div>', unsafe_allow_html=True)
     
     st.markdown(f"<h2 style='font-size: 32px; margin-bottom: 20px; margin-top: 20px;'>IZBERI KATEGORIJO:</h2>", unsafe_allow_html=True)
