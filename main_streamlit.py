@@ -12,7 +12,7 @@ CARD_COLOR = "#fff2f5"
 BTN_COLOR = "#f2bfc9"     
 TEXT_COLOR = "#993366"    
 
-# 3. CSS STIL - TVOJA ZMAGOVALNA VERZIJA
+# 3. CSS STIL - KONČNA VERZIJA S POPRAVKOM ZA VODORAVNE GUMBE
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
@@ -44,6 +44,7 @@ st.markdown(f"""
         text-align: center !important;
     }}
 
+    /* CENTRIRANJE NAVPIČNIH BLOKOV */
     [data-testid="stVerticalBlock"] > div {{
         display: flex !important;
         flex-direction: column !important;
@@ -52,6 +53,7 @@ st.markdown(f"""
         width: 100% !important;
     }}
 
+    /* SPLOŠNI STIL ZA GUMBE */
     div.stButton > button {{
         background-color: {BTN_COLOR} !important;
         color: {TEXT_COLOR} !important;
@@ -66,6 +68,28 @@ st.markdown(f"""
         font-family: 'Patrick Hand', cursive !important;
     }}
 
+    /* --- POPRAVEK ZA VODORAVNO VRSTO NA TELEFONU --- */
+    .game-mode [data-testid="stHorizontalBlock"] {{
+        display: flex !important;
+        flex-direction: row !important; /* Prisilimo v vrstico */
+        flex-wrap: nowrap !important;   /* Prepovemo prelom v novo vrstico */
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        gap: 8px !important; /* Razmik med gumbi */
+        margin: 0 auto !important;
+    }}
+
+    /* Prilagoditev gumbov znotraj igralne vrstice */
+    .game-mode div.stButton > button {{
+        font-size: 18px !important; /* Malo manjša pisava, da gre vse v vrsto */
+        padding: 8px 5px !important;
+        min-width: 0 !important;    /* Odstranimo minimalno širino gumba */
+        max-width: none !important; /* Naj se prilagodijo stolpcu */
+        margin: 0 !important;
+    }}
+
+    /* ANIMACIJA LETEČIH SRČKOV */
     @keyframes hearts-fly {{
         0% {{ bottom: -50px; opacity: 1; }}
         100% {{ bottom: 110vh; opacity: 0; }}
@@ -80,14 +104,6 @@ st.markdown(f"""
         pointer-events: none;
         z-index: 99999 !important;
         animation: hearts-fly 4s linear forwards;
-    }}
-
-    .game-mode [data-testid="stHorizontalBlock"] {{
-        flex-direction: row !important;
-        align-items: stretch !important;
-        width: 100% !important;
-        max-width: 500px !important;
-        margin: 0 auto !important;
     }}
 
     .q-card {{
@@ -187,7 +203,7 @@ elif st.session_state.page == "count_selection":
             st.session_state.index = 0
             st.session_state.page = "game"
             st.rerun()
-    st.write("") # Malo presledka
+    st.write("")
     if st.button("🏠 NAZAJ NA MENI"):
         st.session_state.page = "main"
         st.rerun()
@@ -200,7 +216,7 @@ elif st.session_state.page == "game":
         st.write(f"Kartica {st.session_state.index + 1} od {len(st.session_state.deck)}")
         st.markdown(f'<div class="q-card"><p style="font-size: 26px; font-weight: bold;">{current_q}</p></div>', unsafe_allow_html=True)
         
-        # GLAVNI GUMBI ZA IGRO
+        # VRSTA GUMBOV
         st.markdown('<div class="game-mode">', unsafe_allow_html=True)
         c1, c2, c3 = st.columns([1, 0.8, 1.2])
         with c1:
@@ -220,7 +236,6 @@ elif st.session_state.page == "game":
                 st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
 
-        # GUMB MENI NA SAMEM DNU
         st.write("---")
         if st.button("🏠 MENI"):
             st.session_state.page = "main"
