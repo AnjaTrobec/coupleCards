@@ -12,35 +12,44 @@ CARD_COLOR = "#fff2f5"
 BTN_COLOR = "#f2bfc9"     
 TEXT_COLOR = "#993366"    
 
-# 3. CSS STIL - FIKSEN CELOZASLONSKI HEADER ZA IPHONE
+# 3. "DOKONČNI" CSS ZA IPHONE (Ubijemo vse Streamlit robove)
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
 
+    /* 1. Odstranimo vse sistemske odmike Streamlita */
     .stApp {{ background-color: {BG_COLOR}; }}
     
-    /* Odstranimo vse privzete robove */
+    [data-testid="stHeader"] {{ display: none; }} /* Skrijemo Streamlitov top bar */
+    
     .block-container {{
         max-width: 100% !important;
-        padding: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }}
 
-    /* HEADER - Velik beli pas čez celo širino */
+    /* 2. HEADER - Prisilimo ga, da je čez cel zaslon brez lukenj */
     .header-section {{
-        background-color: #ffffff;
-        padding: 20px 20px 25px 20px;
+        background-color: #ffffff !important;
+        padding: 40px 20px 30px 20px;
         text-align: center;
-        width: 100vw;
-        position: relative;
-        left: 50%;
-        right: 50%;
-        margin-left: -50vw;
-        margin-right: -50vw;
+        width: 100vw !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
         border-bottom: 3px solid {BTN_COLOR};
         margin-bottom: 30px;
-        display: block !important;
+        box-sizing: border-box;
     }}
 
+    /* 3. CENTRIRANJE VSEBINE POD HEADERJEM */
+    [data-testid="stVerticalBlock"] {{
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }}
+
+    /* Ikona srčka */
     .top-icon-container img {{
         max-width: 50px !important;
         margin: 0 auto 10px auto !important;
@@ -51,15 +60,6 @@ st.markdown(f"""
         font-family: 'Patrick Hand', cursive !important;
         color: {TEXT_COLOR} !important;
         text-align: center !important;
-    }}
-
-    /* CENTRIRANJE VSEH ELEMENTOV */
-    [data-testid="stVerticalBlock"] > div {{
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: 100% !important;
     }}
 
     /* GUMBI */
@@ -76,17 +76,15 @@ st.markdown(f"""
         box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
     }}
 
-    /* MANJŠI GUMB MENI V HEADERJU */
+    /* GUMB MENI V HEADERJU */
     .menu-btn-top div.stButton > button {{
         max-width: 100px !important;
         font-size: 16px !important;
         padding: 5px !important;
         margin-bottom: 15px !important;
-        background-color: {BTN_COLOR} !important;
-        opacity: 0.9;
     }}
 
-    /* ANIMACIJA LETEČIH SRČKOV */
+    /* ANIMACIJA SRČKOV */
     @keyframes hearts-fly {{
         0% {{ bottom: -50px; opacity: 1; }}
         100% {{ bottom: 110vh; opacity: 0; }}
@@ -100,7 +98,6 @@ st.markdown(f"""
         animation: hearts-fly 4s linear forwards;
     }}
 
-    /* IGRA */
     .game-mode [data-testid="stHorizontalBlock"] {{
         flex-direction: row !important;
         width: 100% !important;
@@ -173,6 +170,7 @@ def toggle_fav(q):
 # --- STRANI ---
 
 if st.session_state.page == "main":
+    # HEADER SECTION
     st.markdown('<div class="header-section">', unsafe_allow_html=True)
     if os.path.exists("heart.png"):
         st.markdown('<div class="top-icon-container">', unsafe_allow_html=True)
@@ -180,6 +178,7 @@ if st.session_state.page == "main":
         st.markdown('</div>', unsafe_allow_html=True)
     st.markdown(f'<h1 style="font-size: 42px; margin: 0;">ČAS ZA NAJU</h1><p style="font-size: 18px; margin-top: 5px; opacity: 0.8;">✨ Pogovor, ki povezuje ✨</p></div>', unsafe_allow_html=True)
     
+    # KREMNI DEL
     st.markdown(f"<h2 style='font-size: 32px; margin-top: 20px;'>IZBERI KATEGORIJO:</h2>", unsafe_allow_html=True)
     for cat in sorted(questions.keys()):
         if st.button(cat.upper()):
@@ -217,7 +216,6 @@ elif st.session_state.page == "count_selection":
             st.rerun()
 
 elif st.session_state.page == "game":
-    # TUKAJ JE POPRAVEK: Vse gre v isti beli blok
     st.markdown('<div class="header-section">', unsafe_allow_html=True)
     st.markdown('<div class="menu-btn-top">', unsafe_allow_html=True)
     if st.button("Meni"):
