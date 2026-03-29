@@ -3,16 +3,19 @@ import pandas as pd
 import random
 import os
 
-# 1. KONFIGURACIJA STRANI
+# 1. VARNA DEFINICIJA SRČKA (da ne moti f-stringa)
+HEART_ICON = "❤️"
+
+# 2. KONFIGURACIJA STRANI
 st.set_page_config(page_title="Najina Pot", page_icon="❤️", layout="wide")
 
-# 2. DEFINICIJA BARV
+# 3. DEFINICIJA BARV
 BG_COLOR = "#f5f2ee"      
 CARD_COLOR = "#fff2f5"    
 BTN_COLOR = "#f2bfc9"     
 TEXT_COLOR = "#993366"    
 
-# 3. CSS STIL
+# 4. CELOTEN CSS STIL
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
@@ -51,7 +54,7 @@ st.markdown(f"""
         width: 100% !important;
         max-width: 280px !important;
         font-size: 22px !important;
-        padding: 10px !important;
+        padding: 12px !important;
         box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
         margin: 5px auto !important;
     }}
@@ -78,20 +81,25 @@ st.markdown(f"""
         justify-content: center;
     }}
 
-    /* MAGIČNI SRČKI NAMESTO SNEŽINK */
-    .stSnow i::before {{
-        content: "\\\\2764" !important;
+    /* --- SRČKI NAMESTO SNEŽINK --- */
+    /* Najprej skrijemo originalne snežinke */
+    [data-testid="stSnow"] i {{
+        display: none !important;
+    }}
+    
+    /* Vstavimo srček preko pseudo-elementa */
+    [data-testid="stSnow"] span::before {{
+        content: "{HEART_ICON}" !important;
         font-style: normal !important;
-        font-size: 30px !important;
-        color: #ff4b4b !important;
-        display: inline-block !important;
+        font-size: 35px !important;
+        visibility: visible !important;
     }}
 
     #MainMenu, footer, header {{visibility: hidden;}}
     </style>
     """, unsafe_allow_html=True)
 
-# 4. LOGIKA PODATKOV
+# 5. LOGIKA PODATKOV
 FAVORITES_FILE = "favorites.txt"
 def load_data():
     try:
@@ -195,8 +203,8 @@ elif st.session_state.page == "game":
                 st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
     else:
-        st.snow()  # Sproži srčke!
-        st.markdown("<h2 style='margin-top: 30px;'>Konec! ❤️</h2>", unsafe_allow_html=True)
+        st.snow()  # Sproži efekt srčkov!
+        st.markdown("<h2 style='margin-top: 30px;'>Prišla sta do konca! ❤️</h2>", unsafe_allow_html=True)
         if st.button("Domov"):
             st.session_state.page = "main"
             st.rerun()
