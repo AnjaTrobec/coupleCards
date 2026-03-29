@@ -18,8 +18,19 @@ TEXT_COLOR = "#993366"    # (0.6, 0.2, 0.4)
 
 st.markdown(f"""
     <style>
-    .stApp {{ background-color: {BG_COLOR}; }}
-    h1, h2, h3, p {{ color: {TEXT_COLOR}; font-family: 'Comic Sans MS', cursive; }}
+    /* Uvoz pisave iz Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+
+    .stApp {{ 
+        background-color: {BG_COLOR}; 
+    }}
+
+    /* Uporaba pisave za celo aplikacijo */
+    html, body, [class*="css"], .stMarkdown, p, h1, h2, h3, button {{
+        font-family: 'Patrick Hand', cursive !important;
+        color: {TEXT_COLOR};
+    }}
+
     .stButton>button {{
         background-color: {BTN_COLOR};
         color: {TEXT_COLOR};
@@ -27,7 +38,10 @@ st.markdown(f"""
         border: none;
         font-weight: bold;
         width: 100%;
+        font-family: 'Patrick Hand', cursive !important;
+        font-size: 24px !important; /* Malce večja pisava za gumbe */
     }}
+
     .q-card {{
         background-color: {CARD_COLOR};
         padding: 40px;
@@ -40,7 +54,13 @@ st.markdown(f"""
         align-items: center;
         justify-content: center;
     }}
-    .q-text {{ font-size: 28px; color: {TEXT_COLOR}; font-weight: bold; }}
+
+    .q-text {{ 
+        font-size: 32px !important; 
+        color: {TEXT_COLOR}; 
+        font-weight: bold;
+        font-family: 'Patrick Hand', cursive !important;
+    }}
     </style>
     """, unsafe_allow_html=True)
 
