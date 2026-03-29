@@ -31,16 +31,25 @@ st.markdown(f"""
         color: {TEXT_COLOR};
     }}
 
-    .stButton>button {{
+    .stButton>button {
         background-color: {BTN_COLOR};
         color: {TEXT_COLOR};
         border-radius: 20px;
         border: none;
         font-weight: bold;
-        width: 100%;
+        width: 100% !important;
+        display: block;
+        margin: 10px 0;
         font-family: 'Patrick Hand', cursive !important;
-        font-size: 24px !important; /* Malce večja pisava za gumbe */
-    }}
+        font-size: 24px !important;
+        padding: 10px;
+    }
+
+    /* Poseben stil za navigacijske gumbe v vrstici, da niso preveliki */
+    .nav-col button {
+        font-size: 18px !important;
+        padding: 5px !important;
+    }
 
     .q-card {{
         background-color: {CARD_COLOR};
