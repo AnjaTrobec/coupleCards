@@ -71,30 +71,29 @@ st.markdown(f"""
     }}
 
     /* ANIMACIJA LETEČIH SRČKOV */
-        @keyframes hearts-fly {
-            0% { 
+    @keyframes hearts-fly {{
+            0% {{ 
                 transform: translateY(0) scale(0) translateZ(0); 
                 opacity: 1; 
-            }
-            100% { 
+            }}
+            100% {{ 
                 transform: translateY(-120vh) scale(1.5) translateZ(0); 
                 opacity: 0; 
-            }
-        }
+            }}
+        }}
     
-        .heart-particle {
+        .heart-particle {{
             position: fixed;
-            bottom: -50px; /* Začnejo malo pod robom */
+            bottom: -50px;
             color: #ff4b4b;
             font-size: 30px;
             user-select: none;
             pointer-events: none;
-            z-index: 999999 !important; /* Prisilimo jih na sam vrh */
-            /* Tole spodaj Safariju ukaže strojno pospeševanje */
+            z-index: 999999 !important;
             -webkit-transform: translateZ(0);
             transform: translateZ(0);
             animation: hearts-fly 4s linear forwards;
-        }
+        }}
 
     /* IZJEMA ZA IGRO: Stolpci vodoravno */
     .game-mode [data-testid="stHorizontalBlock"] {{
