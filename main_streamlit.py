@@ -206,29 +206,34 @@ elif st.session_state.page == "count_selection":
 
 elif st.session_state.page == "game":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 34px; margin: 0;">{st.session_state.category}</h1></div>', unsafe_allow_html=True)
+    
+    # GUMB MENI NA VRHU (Varen, ker je samostojen element na sredini)
+    if st.button("🏠 MENI"):
+        st.session_state.page = "main"
+        st.rerun()
+
     if st.session_state.index < len(st.session_state.deck):
         current_q = st.session_state.deck[st.session_state.index]
         st.write(f"Kartica {st.session_state.index + 1} od {len(st.session_state.deck)}")
         st.markdown(f'<div class="q-card"><p style="font-size: 26px; font-weight: bold;">{current_q}</p></div>', unsafe_allow_html=True)
         
         st.markdown('<div class="game-mode">', unsafe_allow_html=True)
-        c1, c2, c3, c4 = st.columns([1, 1, 0.7, 1.2])
+        # SPODAJ SO ZDAJ SAMO 3 GUMBI (Večji in bolj pregledni)
+        c1, c2, c3 = st.columns([1, 0.8, 1.2])
         with c1:
             if st.button("<"):
                 if st.session_state.index > 0:
                     st.session_state.index -= 1
                     st.rerun()
         with c2:
-            if st.button("Meni"):
-                st.session_state.page = "main"
-                st.rerun()
-        with c3:
             is_f = current_q in st.session_state.favorites
-            if st.button("⭐" if is_f else "☆"):
+            # Uporabimo srčke, ker so bolj romantični
+            heart_icon = "❤️" if is_f else "🤍"
+            if st.button(heart_icon):
                 toggle_fav(current_q)
                 st.rerun()
-        with c4:
-            if st.button("Naprej"):
+        with c3:
+            if st.button("NAPREJ"):
                 st.session_state.index += 1
                 st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
