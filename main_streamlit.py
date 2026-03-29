@@ -12,15 +12,17 @@ CARD_COLOR = "#fff2f5"
 BTN_COLOR = "#f2bfc9"     
 TEXT_COLOR = "#993366"    
 
-# 3. POSODOBLJEN CSS STIL (Brez spodnjega okvirčka)
+# 3. CELOTEN CSS STIL (Fokus na centriranje)
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
 
+    /* Ozadje aplikacije */
     .stApp {{ 
         background-color: {BG_COLOR}; 
     }}
 
+    /* Odstranitev paddingov za celozaslonski header */
     .block-container {{
         max-width: 100% !important;
         padding: 0 !important;
@@ -32,26 +34,51 @@ st.markdown(f"""
         padding: 40px 20px 30px 20px;
         text-align: center;
         width: 100%;
-        border-bottom: 3px solid {BTN_COLOR}; /* To je najina ločilna črta */
+        border-bottom: 3px solid {BTN_COLOR};
         margin-bottom: 30px;
     }}
 
-    html, body, [class*="css"], .stMarkdown, p, h1, h2, h3, button {{
+    /* Globalni fonti in centriranje teksta */
+    html, body, [class*="css"], .stMarkdown, p, h1, h2, h3 {{
         font-family: 'Patrick Hand', cursive !important;
         color: {TEXT_COLOR} !important;
+        text-align: center !important;
+    }}
+
+    /* AGRESIVNO CENTRIRANJE VSEBNIKOV */
+    [data-testid="stVerticalBlock"] > div {{
+        display: flex;
+        flex-direction: column;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100%;
     }}
 
     /* STIL ZA GUMBE */
+    div.stButton {{
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }}
+
     div.stButton > button {{
         background-color: {BTN_COLOR} !important;
         color: {TEXT_COLOR} !important;
         border-radius: 25px !important;
         border: none !important;
         width: 100% !important;
+        max-width: 450px !important; 
         font-size: 26px !important;
-        padding: 12px 10px !important;
-        margin: 10px 0 !important;
+        padding: 12px 20px !important;
+        margin: 10px auto !important;
         box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
+        font-family: 'Patrick Hand', cursive !important;
+    }}
+
+    /* Navigacijski gumbi v igri naj ostanejo v vrsti */
+    [data-testid="column"] [data-testid="stVerticalBlock"] > div {{
+        flex-direction: row !important;
+        align-items: stretch !important;
     }}
 
     /* KARTICA Z VPRAŠANJEM */
@@ -121,7 +148,6 @@ def toggle_fav(q):
 # --- STRANI ---
 
 if st.session_state.page == "main":
-    # Beli Header s črto spodaj
     st.markdown(f"""
         <div class="header-section">
             <h1 style='font-size: 48px; margin: 0;'>ČAS ZA POGOVOR</h1>
@@ -129,10 +155,11 @@ if st.session_state.page == "main":
         </div>
         """, unsafe_allow_html=True)
     
-    st.markdown(f"<h2 style='text-align: center; color: {TEXT_COLOR}; font-size: 36px; margin-bottom: 25px;'>IZBERI KATEGORIJO:</h2>", unsafe_allow_html=True)
+    st.markdown(f"<h2 style='color: {TEXT_COLOR}; font-size: 36px; margin-bottom: 25px;'>IZBERI KATEGORIJO:</h2>", unsafe_allow_html=True)
     
     categories = sorted([c for c in questions.keys()])
     for cat in categories:
+        # Ponovna uporaba stolpcev za fiksno centriranje na mobilnih napravah
         c1, c2, c3 = st.columns([0.1, 0.8, 0.1])
         with c2:
             if st.button(cat.upper()):
@@ -154,12 +181,11 @@ if st.session_state.page == "main":
 
 elif st.session_state.page == "count_selection":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 42px;">{st.session_state.category}</h1></div>', unsafe_allow_html=True)
-    
-    st.markdown('<p style="text-align: center; font-size: 24px; margin-top: 20px;">Koliko kartic želita vleči?</p>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size: 24px; margin-top: 20px;">Koliko kartic želita vleči?</p>', unsafe_allow_html=True)
     for opt in [5, 10, "Vse"]:
         c1, c2, c3 = st.columns([0.1, 0.8, 0.1])
         with c2:
-            if st.button(f"Igraj {opt} kartic"):
+            if st.button(f"Igraj {opt}"):
                 q_list = questions[st.session_state.category]
                 n = len(q_list) if opt == "Vse" else opt
                 st.session_state.deck = random.sample(q_list, min(n, len(q_list)))
@@ -177,7 +203,7 @@ elif st.session_state.page == "game":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 38px;">{st.session_state.category}</h1></div>', unsafe_allow_html=True)
     if st.session_state.index < len(st.session_state.deck):
         current_q = st.session_state.deck[st.session_state.index]
-        st.markdown(f"<p style='text-align: center; margin-top: 15px;'>Kartica {st.session_state.index + 1} od {len(st.session_state.deck)}</p>", unsafe_allow_html=True)
+        st.write(f"Kartica {st.session_state.index + 1} od {len(st.session_state.deck)}")
         st.markdown(f'<div class="q-card"><p class="q-text">{current_q}</p></div>', unsafe_allow_html=True)
         
         col1, col2, col3, col4 = st.columns([1, 1, 0.7, 1.2])
@@ -201,9 +227,9 @@ elif st.session_state.page == "game":
                 st.rerun()
     else:
         st.balloons()
-        st.markdown("<h2 style='text-align: center; margin-top: 50px;'>Prišla sta do konca! ❤️</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='margin-top: 50px;'>Konec! ❤️</h2>", unsafe_allow_html=True)
         c1, c2, c3 = st.columns([0.1, 0.8, 0.1])
         with c2:
-            if st.button("Nazaj na začetek"):
+            if st.button("Nazaj"):
                 st.session_state.page = "main"
                 st.rerun()
