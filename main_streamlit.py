@@ -12,7 +12,7 @@ CARD_COLOR = "#fff2f5"
 BTN_COLOR = "#f2bfc9"     
 TEXT_COLOR = "#993366"    
 
-# 3. CSS STIL - VRNJENA STABILNA SREDINSKA PORAVNAVA
+# 3. CSS STIL
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
@@ -44,8 +44,6 @@ st.markdown(f"""
         text-align: center !important;
     }}
 
-    /* --- KLJUČ ZA SREDINSKO PORAVNAVO --- */
-    /* To poskrbi, da so vsi gumbi v kategorijah in v igri točno na sredini */
     [data-testid="stVerticalBlock"] > div {{
         display: flex !important;
         flex-direction: column !important;
@@ -54,7 +52,6 @@ st.markdown(f"""
         width: 100% !important;
     }}
 
-    /* STIL ZA GUMBE */
     div.stButton > button {{
         background-color: {BTN_COLOR} !important;
         color: {TEXT_COLOR} !important;
@@ -64,12 +61,11 @@ st.markdown(f"""
         max-width: 280px !important; 
         font-size: 22px !important;
         padding: 10px !important;
-        margin: 5px auto !important; /* To centrirani gumbe navzven */
+        margin: 5px auto !important;
         box-shadow: 2px 4px 10px rgba(0,0,0,0.05) !important;
         font-family: 'Patrick Hand', cursive !important;
     }}
 
-    /* ANIMACIJA LETEČIH SRČKOV */
     @keyframes hearts-fly {{
         0% {{ bottom: -50px; opacity: 1; }}
         100% {{ bottom: 110vh; opacity: 0; }}
@@ -86,7 +82,6 @@ st.markdown(f"""
         animation: hearts-fly 4s linear forwards;
     }}
 
-    /* VRSTICA ZA IGRO - Prilagojena za stabilnost */
     .game-mode [data-testid="stHorizontalBlock"] {{
         width: 100% !important;
         max-width: 500px !important;
@@ -122,42 +117,22 @@ def trigger_custom_hearts():
     st.markdown(heart_html, unsafe_allow_html=True)
 
 # --- LOGIKA PODATKOV ---
-FAVORITES_FILE = "favorites.txt"
 def load_data():
     try:
         df = pd.read_csv("cards.csv", encoding="utf-8")
         data = df.groupby("EDITION")["QUESTION"].apply(list).to_dict()
+        # Ustvarimo seznam VSEH vprašanj za naključni mix
+        all_questions = df["QUESTION"].tolist()
+        return data, all_questions
     except:
-        data = {"Napaka": ["Manjka cards.csv!"]}
-    favs = []
-    if os.path.exists(FAVORITES_FILE):
-        try:
-            with open(FAVORITES_FILE, "r", encoding="utf-8") as f:
-                favs = [line.strip() for line in f.readlines() if line.strip()]
-        except: favs = []
-    return data, favs
+        return {"Napaka": ["Manjka cards.csv!"]}, []
 
-questions, favorites = load_data()
+questions_dict, all_questions_list = load_data()
 
 if 'page' not in st.session_state: st.session_state.page = "main"
 if 'index' not in st.session_state: st.session_state.index = 0
 if 'deck' not in st.session_state: st.session_state.deck = []
 if 'category' not in st.session_state: st.session_state.category = ""
-if 'favorites' not in st.session_state: st.session_state.favorites = favorites
-
-def save_favorites():
-    try:
-        with open(FAVORITES_FILE, "w", encoding="utf-8") as f:
-            for fav in st.session_state.favorites:
-                f.write(fav + "\n")
-    except: pass
-
-def toggle_fav(q):
-    if q in st.session_state.favorites:
-        st.session_state.favorites.remove(q)
-    else:
-        st.session_state.favorites.append(q)
-    save_favorites()
 
 # --- STRANI ---
 
@@ -165,33 +140,39 @@ if st.session_state.page == "main":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 42px; margin: 0;">ČAS ZA POGOVOR</h1><p style="font-size: 18px; margin-top: 5px; opacity: 0.8;">✨ Za povezanost na globlji ravni ✨</p></div>', unsafe_allow_html=True)
     st.markdown(f"<h2 style='font-size: 32px; margin-bottom: 20px;'>IZBERI KATEGORIJO:</h2>", unsafe_allow_html=True)
     
-    for cat in sorted(questions.keys()):
+    # Gumbi za specifične kategorije
+    for cat in sorted(questions_dict.keys()):
         if st.button(cat.upper()):
             st.session_state.category = cat
             st.session_state.page = "count_selection"
             st.rerun()
             
-    if st.session_state.favorites:
-        st.write("---")
-        if st.button("❤️ PRILJUBLJENE"):
-            st.session_state.category = "PRILJUBLJENE"
-            st.session_state.deck = st.session_state.favorites.copy()
-            random.shuffle(st.session_state.deck)
-            st.session_state.index = 0
-            st.session_state.page = "game"
-            st.rerun()
+    # Gumb za NAKLJUČNI MIX (vsebuje vsa vprašanja iz vseh kategorij)
+    st.write("---")
+    if st.button("🎲 NAKLJUČNI MIX"):
+        st.session_state.category = "NAKLJUČNI MIX"
+        st.session_state.page = "count_selection"
+        st.rerun()
 
 elif st.session_state.page == "count_selection":
     st.markdown(f'<div class="header-section"><h1 style="font-size: 38px; margin: 0;">{st.session_state.category}</h1></div>', unsafe_allow_html=True)
-    st.markdown('<p style="font-size: 22px; margin-top: 20px;">Koliko kartic?</p>', unsafe_allow_html=True)
-    for opt in [5, 10, "Vse"]:
+    st.markdown('<p style="font-size: 22px; margin-top: 20px;">Koliko kartic želita?</p>', unsafe_allow_html=True)
+    
+    # Izbira vira vprašanj glede na kategorijo
+    if st.session_state.category == "NAKLJUČNI MIX":
+        source_list = all_questions_list
+    else:
+        source_list = questions_dict.get(st.session_state.category, [])
+
+    for opt in [5, 10, 20, "Vse"]:
         if st.button(f"Igraj {opt}"):
-            q_list = questions[st.session_state.category]
-            n = len(q_list) if opt == "Vse" else opt
-            st.session_state.deck = random.sample(q_list, min(n, len(q_list)))
+            n = len(source_list) if opt == "Vse" else opt
+            # Naključno premešamo in izberemo
+            st.session_state.deck = random.sample(source_list, min(n, len(source_list)))
             st.session_state.index = 0
             st.session_state.page = "game"
             st.rerun()
+            
     st.write("")
     if st.button("🏠 NAZAJ"):
         st.session_state.page = "main"
@@ -205,28 +186,22 @@ elif st.session_state.page == "game":
         st.write(f"Kartica {st.session_state.index + 1} od {len(st.session_state.deck)}")
         st.markdown(f'<div class="q-card"><p style="font-size: 26px; font-weight: bold;">{current_q}</p></div>', unsafe_allow_html=True)
         
-        # VRSTA GUMBOV
+        # VRSTA GUMBOV (Le nazaj in naprej, ker srčka ni več)
         st.markdown('<div class="game-mode">', unsafe_allow_html=True)
-        c1, c2, c3 = st.columns([1, 0.8, 1.2])
+        c1, c2 = st.columns([1, 1])
         with c1:
-            if st.button("<"):
+            if st.button("⬅️ Prejšnja"):
                 if st.session_state.index > 0:
                     st.session_state.index -= 1
                     st.rerun()
         with c2:
-            is_f = current_q in st.session_state.favorites
-            heart_icon = "❤️" if is_f else "🤍"
-            if st.button(heart_icon):
-                toggle_fav(current_q)
-                st.rerun()
-        with c3:
-            if st.button(">"):
+            if st.button("Naslednja ➡️"):
                 st.session_state.index += 1
                 st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
 
         st.write("---")
-        if st.button("🏠 MENI"):
+        if st.button("🏠 KONČAJ IGRO"):
             st.session_state.page = "main"
             st.rerun()
             
