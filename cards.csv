@@ -4,9 +4,9 @@ Couples,"Kaj je nekaj slabega in nekaj dobrega, kar si o meni odkril/a šele kas
 Couples,"Kaj je nekaj kar se je spremenilo na pozitivno, ko se je razvijal najin odnos?"
 Couples,"Kako si vedel/a, da si se zaljubil/a vame?"
 Couples,Kdaj in kje sva si prvič izpovedala ljubezen?
-Couples,Kaj te najbolj prizadene v odnosu?
+Couples,S čim te najbolj prizadanem?
 Couples,"Česa si želiš, da bi počela več?"
-Couples,"Koliko bi ocenil/a za svojega partnerja, da te pozna od 1-10?"
+Couples,"Koliko bi rekel/a, da me poznaš od 1-10?"
 Couples,Katere moje geste ti največ pomenijo?
 Couples,Katera moja pohvala ti največ pomeni?
 Couples,Kako pogosto želiš slišati pohvalo ali potrditev?
@@ -16,6 +16,7 @@ Couples,"Če bi lahko uvedla eno novo rutino, ki bi naju povezala, katera bi bil
 Couples,"Kaj lahko vsak od naju naredi, da se v intimnosti počutiva bolj sproščeno?"
 Couples,Katera najina rutina ti je najbolj pri srcu?
 Couples,Kako vidiš najin odnos v 5ih letih?
+Couples,"Se ti zdi, da ti dovolj izkazujem ljubezen?"
 Couples,"Če bi bila najin odnos film, kateri žanr bi bil?"
 Couples,"Ali obstaja par po katerem bi se zgledovala? Če ja, kaj počneta onadva kar lahko počneva tudi midva?"
 Couples,"Kaj je zate ljubezenski jezik, ki ga najbolj začutiš?"
@@ -23,50 +24,79 @@ Couples,"Kaj je najbolj čudaška navada, ki jo imam, pa te vseeno na nek bizare
 Couples,Katera hrana te vedno spravi v dobro voljo?
 Couples,"Kaj bi počela skupaj, če bi imela danes neomejen budget?"
 Couples,Kaj sva midva kot par — jutranji kaos ali večerni zen?
-Serious Conv,Kaj ti v najinem odnosu daje občutek varnosti?
-Serious Conv,"Kako želiš, da se odzovem, ko si pod stresom?"
-Serious Conv,"Kaj je najboljši način, da se umiriva, preden nadaljujeva pogovor?"
-Serious Conv,Kdaj in kako najlažje začneš resen pogovor z mano?
-Serious Conv,"Katero plat sebe želiš, da bi bolje razumel/a?"
-Serious Conv,"Katero temo je za naju najtežje odpreti – in zakaj misliš, da je tako?"
-Serious Conv,Kako lahko izboljšam svoj način komuniciranja s tabo?
-Serious Conv,Kako lahko izboljšam svoj način poslušanja?
-Serious Conv,"Kako želiš, da se odzovem, ko si vidno razburjen_a?"
-5th/10th Aniversary,"Kaj je drugače kot kar si si predstavljal, ko sva začela?"
-5th/10th Aniversary,Katera izkušnja naju je najbolj zbližala?
-5th/10th Aniversary,Kaj je po tvojem mnenju najina največja skupna moč kot par?
-5th/10th Aniversary,"Kako bi opisal/a najin odnos nekomu, ki naju še nikoli ni srečal?"
-5th/10th Aniversary,"Kako misliš, da sva se skozi leta spremenila kot par?"
-5th/10th Aniversary,"Če bi lahko podoživel en dan iz najine zveze, kateri bi bil in zakaj?"
-5th/10th Aniversary,"Kateri film, pesem ali knjiga te vedno spomni name?"
-5th/10th Aniversary,"Kdaj si se prvič zavedal/a, da si želiš z mano preživeti življenje?"
-5th/10th Aniversary,Kateri je tvoj najlepši spomin iz najinih prvih let skupaj?
-5th/10th Aniversary,Kateri skupni cilj še nisva osvojila in je še vedno v najinem načrtu?
-5th/10th Aniversary,Kaj te pri meni najbolj privlači?
-5th/10th Aniversary,Kaj je najina močna točka pri reševanju prepirov?
-5th/10th Aniversary,"Če bi morala izbrati eno pesem, ki opisuje najin odnos, katera bi bila?"
-5th/10th Aniversary,"Kaj je nekaj, kar te je v preteklosti prizadelo, pa o tem nisva govorila?"
-5th/10th Aniversary,Kako bi se rad/a razvijal/a kot oseba v naslednjih 10 letih in kako te lahko pri tem podpiram?
-5th/10th Aniversary,"Kaj te pri meni še vedno preseneča, čeprav me poznaš že toliko let?"
-5th/10th Aniversary,"Kako veš, da te ljubim, tudi ko ti tega ne povem?"
-5th/10th Aniversary,"Kaj je ena stvar, ki jo lahko izboljšava v najinem odnosu?"
-5th/10th Aniversary,Kako lahko bolje izražam svojo ljubezen do tebe?
-5th/10th Aniversary,"Kaj je ena stvar, ki bi jo rad/a delal/a več skupaj?"
-5th/10th Aniversary,Kako zgleda tvoj najljubši zmenek z mano?
-5th/10th Aniversary,"Kaj je ena skupna želja, ki jo še nisva uresničila?"
-5th/10th Aniversary,"Če bi imela priložnost potovati v preteklost in dati nasvet najinemu mlajšemu jazu, kaj bi mu rekla?"
-5th/10th Aniversary,Katera pesem najbolje opiše najino razmerje?
-5th/10th Aniversary,Kateri je bil najbolj smešen ali neroden trenutek v najini zvezi?
-5th/10th Aniversary,"Če bi lahko izbrisala en težek trenutek, ki sva ga doživela skupaj, bi to storil/a? Zakaj da ali zakaj ne?"
-5th/10th Aniversary,"Kaj je najin inner joke, ki ga drugi ne razumejo?"
-5th/10th Aniversary,Kaj sem te naučil/a o ljubezni v teh letih?
-5th/10th Aniversary,"Kaj je nekaj kar bi si mogla povedat že zdavnaj, pa si nisva, ker sva čutila, da je prepozno, da bi to povedala naglas?"
-5th/10th Aniversary,"Kaj si misliš o tem, kako rešujeva konflikte?"
-5th/10th Aniversary,Kdaj se počutiš najbolj ljubljeno in cenjeno ob meni?
-5th/10th Aniversary,Kaj ti je pri meni fizično najbolj všeč?
-5th/10th Aniversary,Kateri je najin najljubši hobi trenutno in katerega bi mogla začet?
-5th/10th Aniversary,"Če bi morala izbrati eno pustolovščino, ki bi jo skupaj doživela, katero bi izbrala kot najljubšo?"
-5th/10th Aniversary,Kateri je tvoj najljubši vzdevek zame?
+Couples,Kateri je tvoj najljubši vzdevek zame?
+Couples,Katera pesem te spomni name?
+Couples,"Če bi morala skupaj preživeti mesec dni na samotnem otoku, kaj bi bila tvoja glavna naloga in kaj moja?"
+Couples,"Kaj je tista ena majhna stvar, ki jo naredim vsak dan, pa se zaradi nje počutiš ljubljeno?"
+Couples,"Kam bi se odselila, če bi nama nekdo rekel, da lahko od jutri živiva kjerkoli na svetu?"
+Couples,Katero veščino bi se rad/a naučila skupaj z mano?
+Couples,"Kaj je zate definicija popolnega dneva, ki ga preživiva skupaj?"
+Couples,"Kdaj si v najini zvezi začutil/a, da je to ""to""?"
+Couples,Katera tvoja lastnost se je ob meni najbolj spremenila ali razvila?
+Couples,"Če bi lahko spremenila eno stvar na najini poti do zdaj, bi sploh kaj spremenila?"
+Couples,"Kaj je tisto, česar o tebi ne ve nihče drug, razen mene?"
+Couples,"Kaj je zate ""neodpustljivo"" dejanje, ki bi popolnoma zlomilo tvoje zaupanje?"
+Couples,"Če bi naju ljudje opazovali od daleč, katero vrednoto bi rekli, da najbolj zastopava?"
+Couples,"Kaj je tisto, kar tvojemu življenju daje največji smisel, in kje v tem mozaiku sem jaz?"
+Couples,"Kateri tvoj kos oblačila bi najraje ""ponesreči"" izgubil/a v pranju?"
+Couples,"Kateri ""zmenek doma"" ti je ljubši od drage večerje zunaj?"
+Couples,"Kateri trenutek v tednu je zate ""najin trenutek"", ki se ga najbolj veseliš?"
+Couples,"Kako veš, da sem slabe volje, še preden odprem usta?"
+Couples,"Če bi mi moral/a kupiti darilo za 5 €, s čim bi me najbolj osrečil/a?"
+Couples,"Kateri moj objem ti je najljubši: tisti za dobro jutro, tisti v tolažbo ali tisti ""kar tako""?"
+We can make it,Kaj ti v najinem odnosu daje občutek varnosti?
+We can make it,"Se ti zdi, da se ob prepirih bova drug proti drugemu ali skupaj proti problemu?"
+We can make it,"Kaj je tisto, čemur si se zavestno odpovedal/a, da bi najin odnos deloval, in ali kdaj čutiš obžalovanje zaradi tega?"
+We can make it,"Katera tvoja ""rana"" iz otroštva se v najinem odnosu najpogosteje oglasi?"
+We can make it,"Ali obstaja kakšna potreba v tvojem srcu, ki je ne upaš izraziti, ker se bojiš, da bi bila zame preveč?"
+We can make it,"Kaj je tista stvar, ki je pri meni ne razumeš, pa si se sčasoma preprosto nehal/a truditi, da bi jo?"
+We can make it,Če bi bila ljubezen odločitev in ne čustvo – zakaj bi se vsako jutro znova odločil/a zame?
+We can make it,"Kaj je tista stvar, za katero želiš, da si jo ljudje (in jaz) zapomnijo o tebi?"
+We can make it,"Kako želiš, da se odzovem, ko si pod stresom?"
+We can make it,"Katere besede od mene najbolj hrepeniš slišati, pa ti jih morda premalokrat povem?"
+We can make it,"Kaj je najboljši način, da se umiriva, preden nadaljujeva pogovor?"
+We can make it,Kdaj in kako najlažje začneš resen pogovor z mano?
+We can make it,"Katero plat sebe želiš, da bi bolje razumel/a?"
+We can make it,"Kateri del sebe najtežje sprejmeš in kako se počutiš, ko jaz vidim ta del tebe?"
+We can make it,"Česa se v najinem odnosu najbolj bojiš, pa o tem redko spregovoriš?"
+We can make it,"Katero temo je za naju najtežje odpreti – in zakaj misliš, da je tako?"
+We can make it,Kako lahko izboljšam svoj način komuniciranja s tabo?
+We can make it,Kako lahko izboljšam svoj način poslušanja?
+We can make it,"Kako želiš, da se odzovem, ko si vidno razburjen_a?"
+Anniversary,"Kaj je drugače kot kar si si predstavljal, ko sva začela?"
+Anniversary,Katera izkušnja naju je najbolj zbližala?
+Anniversary,Kaj je po tvojem mnenju najina največja skupna moč kot par?
+Anniversary,"Kako bi opisal/a najin odnos nekomu, ki naju še nikoli ni srečal?"
+Anniversary,"Kako misliš, da sva se skozi leta spremenila kot par?"
+Anniversary,"Če bi lahko podoživel en dan iz najine zveze, kateri bi bil in zakaj?"
+Anniversary,"Kateri film, pesem ali knjiga te vedno spomni name?"
+Anniversary,"Kdaj si se prvič zavedal/a, da si želiš z mano preživeti življenje?"
+Anniversary,Kateri je tvoj najlepši spomin iz najinih prvih let skupaj?
+Anniversary,Kateri skupni cilj še nisva osvojila in je še vedno v najinem načrtu?
+Anniversary,Kaj te pri meni najbolj privlači?
+Anniversary,Kaj je najina močna točka pri reševanju prepirov?
+Anniversary,"Kaj je nekaj, kar te je v preteklosti prizadelo, pa o tem nisva govorila?"
+Anniversary,Kako bi se rad/a razvijal/a kot oseba v naslednjih 10 letih in kako te lahko pri tem podpiram?
+Anniversary,"Kaj te pri meni še vedno preseneča, čeprav me poznaš že toliko let?"
+Anniversary,"Kako veš, da te ljubim, tudi ko ti tega ne povem?"
+Anniversary,"Kaj je ena stvar, ki jo lahko izboljšava v najinem odnosu?"
+Anniversary,Kako lahko bolje izražam svojo ljubezen do tebe?
+Anniversary,"Kaj je ena stvar, ki bi jo rad/a delal/a več skupaj?"
+Anniversary,Kako zgleda tvoj najljubši zmenek z mano?
+Anniversary,"Kaj je ena skupna želja, ki jo še nisva uresničila?"
+Anniversary,"Če bi imela priložnost potovati v preteklost in dati nasvet najinemu mlajšemu jazu, kaj bi mu rekla?"
+Anniversary,Katera pesem najbolje opiše najino razmerje?
+Anniversary,Kateri je bil najbolj smešen ali neroden trenutek v najini zvezi?
+Anniversary,"Če bi lahko izbrisala en težek trenutek, ki sva ga doživela skupaj, bi to storil/a? Zakaj da ali zakaj ne?"
+Anniversary,"Kaj je najin inner joke, ki ga drugi ne razumejo?"
+Anniversary,Kaj sem te naučil/a o ljubezni v teh letih?
+Anniversary,"Kaj je nekaj kar bi si mogla povedat že zdavnaj, pa si nisva, ker sva čutila, da je prepozno, da bi to povedala naglas?"
+Anniversary,"Kaj si misliš o tem, kako rešujeva konflikte?"
+Anniversary,Kdaj se počutiš najbolj ljubljeno in cenjeno ob meni?
+Anniversary,Kaj ti je pri meni fizično najbolj všeč?
+Anniversary,Kateri je najin najljubši hobi trenutno in katerega bi mogla začet?
+Anniversary,"Če bi morala izbrati eno pustolovščino, ki bi jo skupaj doživela, katero bi izbrala kot najljubšo?"
+Anniversary,Kateri je tvoj najljubši vzdevek zame?
 We can make it,"Kaj lahko naredim, da te pomirim, ko ti je hudo?"
 We can make it,"Katera ovira je naslednja, ki bi jo morala skupaj premagati?"
 We can make it,"Kaj lahko naredim jutri, da bo tvoj dan pa četudi samo malenkost boljši?"
@@ -85,4 +115,3 @@ We can make it,"Kaj lahko skupaj ustvariva, da bova okrepila najino vez?"
 We can make it,Kako lahko skupaj oblikujeva prostor v katerem bova oba čutila priložnost za rast? (my absolute favourite)
 We can make it,Kaj te najbolj zaboli v konfliktu?
 We can make it,"Kako lahko oba poskrbiva, da se bova počutila kot ekipa, tudi ko se ne strinjava?"
-We can make it,"Ti si srečni dobitnik te kartice, pospravi jo na stran in jo izkoristi, ko ti je težko in včasih težko izbereš misli in besede. Takrat jo daj partnerju: Ljubim te, tudi ko je težko."
