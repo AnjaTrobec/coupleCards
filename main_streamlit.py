@@ -131,7 +131,7 @@ def trigger_custom_hearts():
 # STRAN 1: Glavni meni
 if st.session_state.page == "main":
     st.markdown('<div class="header-section"><h1>ČAS ZA POGOVOR</h1><p>✨ Za povezanost na globlji ravni ✨</p></div>', unsafe_allow_html=True)
-    st.markdown("## IZBERI KATEGORIJO:")
+    st.markdown("## IZBERITA KATEGORIJO:")
     
     # Izpis kategorij iz CSV
     for cat in sorted(questions_dict.keys()):
@@ -142,8 +142,8 @@ if st.session_state.page == "main":
             
     st.markdown("---")
     # Gumb za Naključni Mix
-    if st.button("🎲 NAKLJUČNI MIX", key="btn_mix"):
-        st.session_state.category = "NAKLJUČNI MIX"
+    if st.button("NAKLJUČNE KARTICE", key="btn_mix"):
+        st.session_state.category = "NAKLJUČNE KARTICE"
         st.session_state.page = "count_selection"
         st.rerun()
 
@@ -153,7 +153,7 @@ elif st.session_state.page == "count_selection":
     st.markdown("### Koliko kartic želita?")
     
     # Določitev nabora vprašanj
-    if st.session_state.category == "NAKLJUČNI MIX":
+    if st.session_state.category == "NAKLJUČNE KARTICE":
         pool = all_questions_list
     else:
         pool = questions_dict.get(st.session_state.category, [])
@@ -202,7 +202,7 @@ elif st.session_state.page == "game":
                 st.rerun()
 
         st.markdown("---")
-        if st.button("🏠 KONČAJ"):
+        if st.button("🏠 NAZAJ DOMOV"):
             st.session_state.page = "main"
             st.rerun()
             
@@ -211,6 +211,6 @@ elif st.session_state.page == "game":
         trigger_custom_hearts()
         st.markdown("<h2 style='margin-top: 50px;'>Prišla sta do konca! ❤️</h2>", unsafe_allow_html=True)
         st.markdown("<p><i>Odnos ne raste tam, kjer sta si dva v vsem podobna, ampak tam, kjer se varno pogovarjata o vsem, v čemer sta si različna.</i></p>", unsafe_allow_html=True)
-        if st.button("🏠 NAZAJ NA ZAČETEK"):
+        if st.button("🏠 NAZAJ DOMOV"):
             st.session_state.page = "main"
             st.rerun()
