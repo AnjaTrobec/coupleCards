@@ -190,18 +190,18 @@ elif st.session_state.page == "game":
         st.markdown('<div class="game-mode">', unsafe_allow_html=True)
         c1, c2 = st.columns([1, 1])
         with c1:
-            if st.button("⬅️ Prejšnja"):
+            if st.button("⬅️"):
                 if st.session_state.index > 0:
                     st.session_state.index -= 1
                     st.rerun()
         with c2:
-            if st.button("Naslednja ➡️"):
+            if st.button("➡️"):
                 st.session_state.index += 1
                 st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
 
         st.write("---")
-        if st.button("🏠 KONČAJ IGRO"):
+        if st.button("🏠 NAZAJ DOMOV"):
             st.session_state.page = "main"
             st.rerun()
             
