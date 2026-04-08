@@ -196,7 +196,7 @@ elif st.session_state.page == "game":
 
         with col2:
             is_last = st.session_state.index == len(st.session_state.deck) - 1
-            label = "Zaključi 🏁" if is_last else "➡️"
+            label = "Konec igre" if is_last else "➡️"
             if st.button(label):
                 st.session_state.index += 1
                 st.rerun()
@@ -210,7 +210,7 @@ elif st.session_state.page == "game":
         # Konec igre
         trigger_custom_hearts()
         st.markdown("<h2 style='margin-top: 50px;'>Prišla sta do konca! ❤️</h2>", unsafe_allow_html=True)
-        st.markdown("<p>Upam, da sta o drug drugem izvedela kaj novega.</p>", unsafe_allow_html=True)
+        st.markdown("<p><i>Odnos ne raste tam, kjer sta si dva v vsem podobna, ampak tam, kjer se varno pogovarjata o vsem, v čemer sta si različna.</i></p>", unsafe_allow_html=True)
         if st.button("🏠 NAZAJ NA ZAČETEK"):
             st.session_state.page = "main"
             st.rerun()
